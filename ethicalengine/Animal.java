@@ -8,4 +8,10 @@ public class Animal extends Persona{
         super();
     }
 
+    public Animal(Animal otherAnimal){
+        this.setAge(otherAnimal.getAge());
+        this.setBodytype(otherAnimal.getBodytype());
+        this.setGender(otherAnimal.getGender());
+    }
+
 }

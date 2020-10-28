@@ -45,6 +45,13 @@ public abstract class Persona {
         this.bodytype=bodytype;
     }
 
+    //copy constructor
+    public Persona(Persona otherPersona){
+        this.age= otherPersona.age;
+        this.gender= otherPersona.gender;
+        this.bodytype= otherPersona.bodytype;
+    }
+
 
 
 
