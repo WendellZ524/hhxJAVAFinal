@@ -1,6 +1,13 @@
 package ethicalengine;
 
 public class Human extends Persona {
+
+
+
+
+
+
+
     private Profession profession=Profession.NONE;
     private boolean isPregnant = false;
 
@@ -53,17 +60,11 @@ public class Human extends Persona {
     return ageCategory;
     }
 
-    public enum Profession {
-        DOCTOR,CEO,CRIMINAL,HOMELESS,UNEMPLOYED,NONE
-    }
+
 
     public Profession getProfession() {
         return this.profession;
     }
 }
-
-
-
-
 
 

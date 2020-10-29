@@ -52,7 +52,22 @@ public abstract class Persona {
         this.bodytype= otherPersona.bodytype;
     }
 
+    public enum  AgeCategory {
+        BABY, CHILD, ADULT, SENIOR
+    }
+    
+    
+    public enum Profession {
+        DOCTOR,CEO,CRIMINAL,HOMELESS,UNEMPLOYED,NONE
+    }
 
+    public enum Gender {
+        MALE,FEMALE,UNKNOWN
+    }
+
+    public enum BodyType{
+        MEDIUM,AVERAGE
+    }
 
 
 }
