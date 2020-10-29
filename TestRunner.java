@@ -3,6 +3,7 @@ import java.lang.IllegalArgumentException;
 import ethicalengine.*;
 import ethicalengine.Persona.*;
 
+
 /**
 * Basic tests to make sure core classes, methods, and enumerations are there 
 * with basic functionality
