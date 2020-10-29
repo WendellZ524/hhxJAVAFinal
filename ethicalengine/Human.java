@@ -1,27 +1,34 @@
 package ethicalengine;
 
 public class Human extends Persona {
-
-
-
-
-
-
-
     private Profession profession=Profession.NONE;
     private boolean isPregnant = false;
+    private boolean isYou=false;
 
     public void setProfession(Profession profession) {
         this.profession = profession;
     }
 
     public boolean isPregnant() {
+        // only female can get pregnant
+        if(getGender().toString().equals("MALE")||getGender().toString().equals("UNKNOWN")){
+            isPregnant=false;
+        }
         return isPregnant;
     }
 
     public void setPregnant(boolean pregnant) {
+        // the pregnant is already valid
         isPregnant = pregnant;
     }
+
+    public boolean isYou(){
+        return isYou;
+    }
+    public void setAsYou(boolean isYou){
+        this.isYou=isYou;
+    }
+
 
     public Human(int age, Profession profession, Gender gender, Bodytype bodytype, boolean isPregnant) {
         super.setAge(age);
@@ -59,8 +66,6 @@ public class Human extends Persona {
         }
     return ageCategory;
     }
-
-
 
     public Profession getProfession() {
         return this.profession;

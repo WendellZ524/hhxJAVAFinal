@@ -2,6 +2,7 @@ package ethicalengine;
 
 public abstract class Persona {
 
+
     private int age=18;
     private Gender gender="MALE";
     private Bodytype bodytype="AVERAGE";
@@ -58,7 +59,7 @@ public abstract class Persona {
     
     
     public enum Profession {
-        DOCTOR,CEO,CRIMINAL,HOMELESS,UNEMPLOYED,NONE
+        DOCTOR,CEO,CRIMINAL,HOMELESS,UNEMPLOYED,NONE, TEACHER, CLEANER
     }
 
     public enum Gender {
