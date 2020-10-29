@@ -1,7 +1,7 @@
 package ethicalengine;
 
 public class Animal extends Persona{
-    public Animal(int age, Gender gender, Bodytype bodytype){
+    public Animal(int age, Gender gender, BodyType bodytype){
         super(age,gender,bodytype);
     }
     public Animal(){
@@ -10,7 +10,7 @@ public class Animal extends Persona{
 
     public Animal(Animal otherAnimal){
         this.setAge(otherAnimal.getAge());
-        this.setBodytype(otherAnimal.getBodytype());
+        this.setBodyType(otherAnimal.getBodyType());
         this.setGender(otherAnimal.getGender());
     }
 

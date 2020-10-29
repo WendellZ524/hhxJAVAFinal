@@ -2,10 +2,9 @@ package ethicalengine;
 
 public abstract class Persona {
 
-
     private int age=18;
-    private Gender gender="MALE";
-    private Bodytype bodytype="AVERAGE";
+    private Gender gender;
+    private BodyType bodyType;
 
     public int getAge() {
         return age;
@@ -23,14 +22,13 @@ public abstract class Persona {
         this.gender = gender;
     }
 
-    public Bodytype getBodytype() {
-        return bodytype;
+    public BodyType getBodyType() {
+        return bodyType;
     }
 
-    public void setBodytype(Bodytype bodytype) {
-        this.bodytype = bodytype;
+    public void setBodyType(BodyType bodytype) {
+        this.bodyType = bodytype;
     }
-
 
 
     // empty constructor
@@ -39,18 +37,18 @@ public abstract class Persona {
         // age is the invariant which always age>=0
     }
 
-    public Persona(int age, Gender gender, Bodytype bodytype){
+    public Persona(int age, Gender gender, BodyType bodytype){
         // age is the invariant which always age>=0
         this.age=age;
         this.gender=gender;
-        this.bodytype=bodytype;
+        this.bodyType=bodytype;
     }
 
     //copy constructor
     public Persona(Persona otherPersona){
         this.age= otherPersona.age;
         this.gender= otherPersona.gender;
-        this.bodytype= otherPersona.bodytype;
+        this.bodyType= otherPersona.bodyType;
     }
 
     public enum  AgeCategory {
@@ -67,7 +65,7 @@ public abstract class Persona {
     }
 
     public enum BodyType{
-        MEDIUM,AVERAGE
+        AVERAGE,ATHLETIC,OVERWEIGHT,UNSPECIFIED
     }
 
 

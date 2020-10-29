@@ -8,11 +8,23 @@ public class Human extends Persona {
     public void setProfession(Profession profession) {
         this.profession = profession;
     }
+    public Profession getProfession() {
+        Profession realProfession =Profession.NONE;
+        // 检查是否只有adult有
+        if(getAgeCategory().toString().equals("ADULT")){
+            realProfession=this.profession;
+        }
+        else {
+            System.out.println("只有adult才有职业");
+        }
+        return realProfession;
+    }
 
     public boolean isPregnant() {
         // only female can get pregnant
-        if(getGender().toString().equals("MALE")||getGender().toString().equals("UNKNOWN")){
-            isPregnant=false;
+        if(this.getGender().toString().equals("MALE")||
+                this.getGender().toString().equals("UNKNOWN")){
+            this.isPregnant=false;
         }
         return isPregnant;
     }
@@ -30,12 +42,18 @@ public class Human extends Persona {
     }
 
 
-    public Human(int age, Profession profession, Gender gender, Bodytype bodytype, boolean isPregnant) {
+    public Human(int age, Profession profession, Gender gender, BodyType bodytype, boolean isPregnant) {
         super.setAge(age);
-        super.setBodytype(bodytype);
+        super.setBodyType(bodytype);
         super.setGender(gender);
         this.profession = profession;
         this.isPregnant = isPregnant;
+    }
+
+    public Human(int age,  Gender gender, BodyType bodytype) {
+        super.setAge(age);
+        super.setBodyType(bodytype);
+        super.setGender(gender);
     }
 
     public Human() {
@@ -44,7 +62,7 @@ public class Human extends Persona {
 
     public Human(Human otherHuman) {
         this.setAge(otherHuman.getAge());
-        this.setBodytype(otherHuman.getBodytype());
+        this.setBodyType(otherHuman.getBodyType());
         this.setGender(otherHuman.getGender());
     }
 
@@ -67,8 +85,26 @@ public class Human extends Persona {
     return ageCategory;
     }
 
-    public Profession getProfession() {
-        return this.profession;
+
+
+    public String toString(){
+        String outputYou="";
+        String outputPregnant="";
+        if(this.isYou()){
+            outputYou = "you";
+        }
+        if(this.isPregnant()){
+            outputPregnant="pregnant";
+        }
+
+        if(this.getProfession().toString().equals("NONE")){
+            return (outputYou+" "+getBodyType()+" "+getAgeCategory()+" "
+                    +" "+outputPregnant);
+        }
+        else {
+            return (outputYou+" "+getBodyType()+" "+getAgeCategory()+" "
+                    +getProfession()+" "+outputPregnant);
+        }
     }
 }
 
