@@ -6,8 +6,27 @@ package ethicalengine;
  * @author: tilman.dingler@unimelb.edu.au
  */
 public class Scenario {
+    private boolean isLegalCrossing;
+    private Persona[] passengers;
+    private Persona[] pedestrians;
 
-	// your code goes here
+
+    public Scenario(Persona[] passengers, Persona[] pedestrians, boolean isLegalCrossing){
+        this.passengers=passengers;
+        this.pedestrians=pedestrians;
+        this.isLegalCrossing=isLegalCrossing;
+    }
+
+    public boolean hasYouInCar(){
+        for (int i = 0; i < passengers.length; i++) {
+            if (passengers[i].)
+        }
+    }
+
+    public boolean hasYouInLane(){
+
+    }
+
     
     public Scenario() {
 

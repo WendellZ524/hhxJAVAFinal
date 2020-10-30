@@ -5,7 +5,7 @@ import ethicalengine.Persona.*;
 
 
 /**
-* Basic tests to make sure core classes, methods, and enumerations are there 
+* Basic tests to make sure core classes, methods, and enumerations are there
 * with basic functionality
 * COMP90041, Sem2, 2020: Final Project
 * @author: tilman.dingler@unimelb.edu.au
@@ -62,7 +62,7 @@ public class TestRunner {
             System.err.println("- failed");
             errorCount+=1;
         }
-        
+
         if (!testAnimal()) {
             System.err.println("- failed");
             errorCount+=1;
@@ -90,9 +90,9 @@ public class TestRunner {
 
 
         if(errorCount>0) {
-            System.out.println("-- " + errorCount + " error" + (errorCount==1 ? "" : "s") + " found :(");   
+            System.out.println("-- " + errorCount + " error" + (errorCount==1 ? "" : "s") + " found :(");
         } else {
-            System.out.println("++ No errors found so far. Keep on testing! :) +++++++++++++++++"); 
+            System.out.println("++ No errors found so far. Keep on testing! :) +++++++++++++++++");
         }
     }
 
@@ -167,7 +167,7 @@ public class TestRunner {
         Animal copy = new Animal(a2);
 
         // getter
-        String species = a1.getSpecies(); 
+        String species = a1.getSpecies();
 
         // setter
         a1.setSpecies("dog");
@@ -326,7 +326,7 @@ public class TestRunner {
 
         String[] lines = audit.toString().split(NEWLINE);
 
-        return (lines[0].equals("======================================") 
+        return (lines[0].equals("======================================")
             && lines[1].equals("# Algorithm Audit")
             && lines[2].equals("======================================")
             && lines[3].equals("- % SAVED AFTER " + runCount + " RUNS")
