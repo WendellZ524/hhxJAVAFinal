@@ -10,12 +10,11 @@ public class Human extends Persona {
     }
 
     public Profession getProfession() {
+        // preset all human's profession to NONE
         Profession realProfession = Profession.NONE;
         // 检查是否只有adult有
         if (getAgeCategory().toString().equals("ADULT")) {
             realProfession = this.profession;
-        } else {
-            System.out.println("只有adult才有职业");
         }
         return realProfession;
     }
@@ -31,9 +30,13 @@ public class Human extends Persona {
 
     public void setPregnant(boolean pregnant) {
         // the pregnant is already valid
-
         this.isPregnant = pregnant;
     }
+
+    /**
+     * @return s a boolean indicating whether the human is representative of the user, e.g., you
+     * are one of the passengers in the car.
+     */
 
     public boolean isYou() {
         return isYou;
@@ -87,21 +90,29 @@ public class Human extends Persona {
 
 
     public String toString() {
-        String outputYou = "";
         String outputPregnant = "";
-        if (this.isYou()) {
-            outputYou = "you";
-        }
         if (this.isPregnant()) {
             outputPregnant = "pregnant";
         }
 
-        if (this.getProfession().toString().equals("NONE")) {
-            return (outputYou + " " + getBodyType() + " " + getAgeCategory() + " "
-                    + " " + outputPregnant);
-        } else {
-            return (outputYou + " " + getBodyType() + " " + getAgeCategory() + " "
-                    + getProfession() + " " + outputPregnant);
+        if (this.isYou()) {
+            if (this.getProfession().toString().equals("NONE")) {
+                return ("you " + getBodyType() + " " + getAgeCategory() + " "
+                        + " " + outputPregnant);
+            } else {
+                return ("you " + getBodyType() + " " + getAgeCategory() + " "
+                        + getProfession() + " " + outputPregnant);
+            }
+        }
+        // you are not the passenger
+        else {
+            if (this.getProfession().toString().equals("NONE")) {
+                return (getBodyType() + " " + getAgeCategory() + " "
+                        + " " + outputPregnant);
+            } else {
+                return (getBodyType() + " " + getAgeCategory() + " "
+                        + getProfession() + " " + outputPregnant);
+            }
         }
     }
 

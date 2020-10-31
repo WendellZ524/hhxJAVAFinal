@@ -68,8 +68,9 @@ public abstract class Persona {
         AVERAGE,ATHLETIC,OVERWEIGHT,UNSPECIFIED
     }
 
+    public abstract String toString();
+    }
 
-}
 
 
 
