@@ -52,12 +52,11 @@ public class EthicalEngine {
                 }
             }
             // animal in the car
-//            else if(i instanceof Animal){
-//                if (((Animal) i).isPet()) {
-//                    passengerWeight += 0.05;
-//                }
-//            }
-        }
+            else if(i instanceof Animal){
+                System.out.println(((Animal)i).isPet());
+                }
+            }
+
         // calculate the weights in pedestrians
         for (Persona i : scenario.getPedestrians()) {
             if (i instanceof Human) {
@@ -107,10 +106,10 @@ public class EthicalEngine {
         a1.setPet(true);
 
         Persona[] passengers = new ethicalengine.Persona[4];
-        passengers[0] = passenger1;
+        passengers[0] = a1;
         passengers[1] = passenger2;
-        passengers[2] = a1;
-        passengers[3] = baby;
+        passengers[2] = passenger1;
+        passengers[3] = a2;
         Persona[] pedestrians = new ethicalengine.Persona[4];
         pedestrians[0] = pedestrian1;
         pedestrians[1] = pedestrian2;
