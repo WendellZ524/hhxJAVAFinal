@@ -37,7 +37,7 @@ public class EthicalEngine {
                     passengerWeight += 0.3;
                 }
                 if (((Human) i).getProfession().toString().equals("CRIMINAL")) {
-                    passengerWeight -= 0.4;
+                    passengerWeight -= 0.5;
                 }
                 if (((Human) i).getProfession().toString().equals("UNEMPLOYED") ||
                         ((Human) i).getProfession().toString().equals("HOMELESS")) {
@@ -52,10 +52,12 @@ public class EthicalEngine {
                 }
             }
             // animal in the car
-            else if(i instanceof Animal){
-                System.out.println(((Animal)i).isPet());
+            else if (i instanceof Animal) {
+                if (((Animal) i).isPet()) {
+                    passengerWeight += 0.05;
                 }
             }
+        }
 
         // calculate the weights in pedestrians
         for (Persona i : scenario.getPedestrians()) {
@@ -76,6 +78,15 @@ public class EthicalEngine {
                 }
                 if (i.getBodyType().toString().equals("ATHLETIC")) {
                     pedestrianWeight -= 0.1;
+                }
+            }
+            // animal on the road
+            else if(i instanceof Animal){
+                if (((Animal) i).isPet()) {
+                    pedestrianWeight += 0.05;
+                }
+                if (((Animal) i).getSpecies().equals("bird")){
+                    pedestrianWeight -=0.05;
                 }
             }
 

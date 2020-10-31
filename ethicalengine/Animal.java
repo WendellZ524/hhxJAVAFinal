@@ -13,7 +13,7 @@ public class Animal extends Persona {
     }
 
     public boolean isPet() {
-        return isPet();
+        return isPet;
     }
 
     public void setPet(boolean isPet) {
