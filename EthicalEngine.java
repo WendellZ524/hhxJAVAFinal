@@ -52,11 +52,11 @@ public class EthicalEngine {
                 }
             }
             // animal in the car
-            else {
-                if (((Animal) i).isPet()) {
-                    passengerWeight += 0.05;
-                }
-            }
+//            else if(i instanceof Animal){
+//                if (((Animal) i).isPet()) {
+//                    passengerWeight += 0.05;
+//                }
+//            }
         }
         // calculate the weights in pedestrians
         for (Persona i : scenario.getPedestrians()) {
@@ -79,12 +79,7 @@ public class EthicalEngine {
                     pedestrianWeight -= 0.1;
                 }
             }
-            // animal on the street
-            else {
-                if (((Animal) i).isPet()) {
-                    passengerWeight += 0.05;
-                }
-            }
+
         }
         System.out.println("passenger:" + passengerWeight);
         System.out.println("peds:" + pedestrianWeight);
@@ -97,8 +92,8 @@ public class EthicalEngine {
 
 
     public static void main(String[] args) {
-        Human passenger1 = new Human(34, Human.Profession.HOMELESS, Persona.Gender.MALE, Persona.BodyType.ATHLETIC, false);
-        Human passenger2 = new Human(28, Human.Profession.CEO, Persona.Gender.FEMALE, Persona.BodyType.OVERWEIGHT, true);
+        Human passenger1 = new Human(34, Human.Profession.CRIMINAL, Persona.Gender.MALE, Persona.BodyType.ATHLETIC, false);
+        Human passenger2 = new Human(28, Human.Profession.CRIMINAL, Persona.Gender.FEMALE, Persona.BodyType.OVERWEIGHT, true);
         Human passenger3 = new Human(55, Human.Profession.NONE, Persona.Gender.FEMALE, Persona.BodyType.ATHLETIC, false);
         Human baby = new Human(1, Human.Profession.CEO, Persona.Gender.FEMALE, Persona.BodyType.OVERWEIGHT, false);
         passenger1.setAsYou(true);
@@ -114,7 +109,7 @@ public class EthicalEngine {
         Persona[] passengers = new ethicalengine.Persona[4];
         passengers[0] = passenger1;
         passengers[1] = passenger2;
-        passengers[2] = passenger3;
+        passengers[2] = a1;
         passengers[3] = baby;
         Persona[] pedestrians = new ethicalengine.Persona[4];
         pedestrians[0] = pedestrian1;
