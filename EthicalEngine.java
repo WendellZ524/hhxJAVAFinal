@@ -127,9 +127,17 @@ public class EthicalEngine {
         pedestrians[2] = a1;
         pedestrians[3] = pedestrian2;
         Scenario s1 = new Scenario(passengers, pedestrians, false);
-        System.out.println(s1);
 
-        System.out.println(decide(s1).toString() + " survive.");
+
+
+        ScenarioGenerator scenarioGenerator = new ScenarioGenerator();
+        Animal animal = scenarioGenerator.getRandomAnimal();
+        System.out.println(animal);
+        ScenarioGenerator scenarioGenerator2 = new ScenarioGenerator();
+        Human human =scenarioGenerator2.getRandomHuman();
+        System.out.println(human);
+
+
 
 
     }
