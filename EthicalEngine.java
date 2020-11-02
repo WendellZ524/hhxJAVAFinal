@@ -131,11 +131,9 @@ public class EthicalEngine {
 
 
         ScenarioGenerator scenarioGenerator = new ScenarioGenerator();
-        Animal animal = scenarioGenerator.getRandomAnimal();
-        System.out.println(animal);
-        ScenarioGenerator scenarioGenerator2 = new ScenarioGenerator();
-        Human human =scenarioGenerator2.getRandomHuman();
-        System.out.println(human);
+        Scenario S=scenarioGenerator.generate();
+        System.out.println(S);
+
 
 
 

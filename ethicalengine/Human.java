@@ -44,7 +44,6 @@ public class Human extends Persona {
 
     public void setAsYou(boolean isYou) {
         // set the boolean value to !
-
         this.isYou = isYou;
     }
 

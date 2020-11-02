@@ -90,10 +90,17 @@ public class Scenario {
      */
     public String outputPassengers(){
         String temp="";
-        for(Persona i: getPassengers()){
-            temp+="- ";
-            temp+=i.toString();
-            temp+="\n";
+        // 判断是否有实例
+        for(Persona i: getPassengers()) {
+            if (i != null) {
+                temp += "- ";
+                temp += i.toString();
+                temp += "\n";
+            }
+            else {
+                temp += "- ";
+                temp += "有null！！！！！";
+            }
         }
     return temp;}
 
@@ -103,10 +110,16 @@ public class Scenario {
      */
     public String outputPedestrians(){
         String temp="";
-        for(Persona i: getPedestrians()){
-            temp+="- ";
-            temp+=i.toString();
-            temp+="\n";
+        for(Persona i: getPedestrians()) {
+            if (i != null) {
+                temp += "- ";
+                temp += i.toString();
+                temp += "\n";
+            }
+            else {
+                temp += "- ";
+                temp += "有null！！！！！";
+            }
         }
         return temp;}
 
@@ -124,7 +137,7 @@ public class Scenario {
         return format+"Legal Crossing: " +legalCrossingState +"\n"
                 +"Passengers (" +getPassengerCount()+")"+"\n"
                 + outputPassengers()+"\n"+"Pedestrians ("
-                +getPassengerCount()+")"+"\n"+outputPedestrians();
+                +getPedestrianCount()+")"+"\n"+outputPedestrians();
     }
 
 
