@@ -128,10 +128,13 @@ public class EthicalEngine {
         pedestrians[3] = pedestrian2;
         Scenario s1 = new Scenario(passengers, pedestrians, false);
 
-
-
         ScenarioGenerator scenarioGenerator = new ScenarioGenerator();
+        scenarioGenerator.setPassengerCountMin(3);
+        scenarioGenerator.setPassengerCountMax(8);
+        scenarioGenerator.setPedestrianCountMin(6);
+        scenarioGenerator.setPedestrianCountMax(10);
         Scenario S=scenarioGenerator.generate();
+
         System.out.println(S);
 
 
