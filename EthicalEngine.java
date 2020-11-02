@@ -102,40 +102,32 @@ public class EthicalEngine {
 
 
     public static void main(String[] args) {
-        Human passenger1 = new Human(34, Human.Profession.CRIMINAL, Persona.Gender.MALE, Persona.BodyType.ATHLETIC, false);
-        Human passenger2 = new Human(28, Human.Profession.CRIMINAL, Persona.Gender.FEMALE, Persona.BodyType.OVERWEIGHT, true);
-        Human passenger3 = new Human(55, Human.Profession.NONE, Persona.Gender.FEMALE, Persona.BodyType.ATHLETIC, false);
-        Human baby = new Human(1, Human.Profession.CEO, Persona.Gender.FEMALE, Persona.BodyType.OVERWEIGHT, false);
-        passenger1.setAsYou(true);
-
-        Human pedestrian1 = new Human(66, Human.Profession.UNEMPLOYED, Persona.Gender.MALE, Persona.BodyType.OVERWEIGHT, false);
-        Human pedestrian2 = new Human(19, Human.Profession.NONE, Persona.Gender.FEMALE, Persona.BodyType.ATHLETIC, false);
-        pedestrian2.setAsYou(true);
-
-        Animal a1 = new Animal("bird");
-        Animal a2 = new Animal("dog");
-        a1.setPet(true);
-
-        Persona[] passengers = new ethicalengine.Persona[4];
-        passengers[0] = a1;
-        passengers[1] = passenger2;
-        passengers[2] = passenger1;
-        passengers[3] = a2;
-        Persona[] pedestrians = new ethicalengine.Persona[4];
-        pedestrians[0] = pedestrian1;
-        pedestrians[1] = pedestrian2;
-        pedestrians[2] = a1;
-        pedestrians[3] = pedestrian2;
-        Scenario s1 = new Scenario(passengers, pedestrians, false);
-
+        long seed1 = 1234;
+        long seed2 = 1337;
         ScenarioGenerator scenarioGenerator = new ScenarioGenerator();
-        scenarioGenerator.setPassengerCountMin(3);
-        scenarioGenerator.setPassengerCountMax(8);
-        scenarioGenerator.setPedestrianCountMin(6);
-        scenarioGenerator.setPedestrianCountMax(10);
-        Scenario S=scenarioGenerator.generate();
+        ScenarioGenerator scenarioGenerator2 = new ScenarioGenerator(seed1);
+        ScenarioGenerator scenarioGenerator3 = new ScenarioGenerator(seed2, 1, 7, 1, 7);
 
-        System.out.println(S);
+        // getter
+        Human person = scenarioGenerator.getRandomHuman();
+        Animal animal = scenarioGenerator3.getRandomAnimal();
+
+        // setter
+        scenarioGenerator.setPassengerCountMin(1);
+        scenarioGenerator.setPassengerCountMax(7);
+        scenarioGenerator.setPedestrianCountMin(1);
+        scenarioGenerator.setPedestrianCountMax(7);
+
+        // same seed same scenario features
+        ScenarioGenerator tmp = new ScenarioGenerator(seed1);
+        Scenario scenario1 = scenarioGenerator2.generate();
+        Scenario scenario2 = tmp.generate();
+        System.out.println(scenario1);
+        System.out.println(scenario2);
+
+        System.out.println (scenario1.toString().equals(scenario2.toString()));
+
+
 
 
 
