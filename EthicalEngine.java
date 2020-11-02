@@ -3,7 +3,7 @@ import ethicalengine.*;
 /**
  * COMP90041, Sem2, 2020: Final Project: A skeleton code for you to update
  *
- * @author: tilman.dingler@unimelb.edu.au
+ * @author: HAIXIANG HUANG
  */
 public class EthicalEngine {
 

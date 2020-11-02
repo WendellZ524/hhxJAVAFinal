@@ -96,18 +96,7 @@ public class ScenarioGenerator {
             return createRandomAnimal(speciesNum,ageNum,genderNum,petBoolean,bodyNum);
         }
 
-//        String randomSpecies = speciesList[speciesNum];
-//        Animal animal = new Animal();
-//        animal.setAge(ageNum);
-//        animal.setSpecies(randomSpecies);
-//        animal.setPet(petBoolean);
-//        // create an enum array of gender
-//        Persona.Gender[] genderArr = Persona.Gender.values();
-//        animal.setGender(genderArr[genderNum]);
-//        // create an enum array of bodytype
-//        Persona.BodyType[] bodyArr = Persona.BodyType.values();
-//        animal.setBodyType(bodyArr[bodyNum]);
-//        return animal;
+
     }
 
     /**
@@ -157,19 +146,7 @@ public class ScenarioGenerator {
             return createRandomAHuman(ageNum,genderNum,pregnantBoolean,bodyNum,professionNum);
         }
 
-//        Human human = new Human();
-//        human.setAge(ageNum);
-//        human.setPregnant(pregnantBoolean);
-//        // create an enum array of gender
-//        Persona.Gender[] genderArr = Persona.Gender.values();
-//        human.setGender(genderArr[genderNum]);
-//        // create an enum array of bodytype
-//        Persona.BodyType[] bodyArr = Persona.BodyType.values();
-//        human.setBodyType(bodyArr[bodyNum]);
-//        // create an enum array of profession
-//        Persona.Profession[] professionArr = Persona.Profession.values();
-//        human.setProfession(professionArr[professionNum]);
-//        return human;
+
     }
 
     /**
@@ -264,23 +241,7 @@ public class ScenarioGenerator {
 
             //还没有设置setAsYou的功能
 
-//        // generate a scenario object
-//        Scenario s = new Scenario(passenger, pedestrian, greenLight);
-//        // add objects to passenger
-//        for (int i = 0; i < randomPassengerHumanNum; i++) {
-//            passenger[i] = getRandomHuman();
-//        }
-//        for (int i = randomPassengerHumanNum; i < passenger.length; i++) {
-//            passenger[i] = getRandomAnimal();
-//        }
-//        // add objects to pedestrian
-//        for (int i = 0; i < randomPedsHumanNum; i++) {
-//            pedestrian[i] = getRandomHuman();
-//        }
-//        for (int i = randomPedsHumanNum; i < pedestrian.length; i++) {
-//            pedestrian[i] = getRandomAnimal();
-//        }
-//        return s;
+
     }
 
 }
