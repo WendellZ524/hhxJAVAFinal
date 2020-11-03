@@ -102,31 +102,11 @@ public class EthicalEngine {
 
 
     public static void main(String[] args) {
-        long seed1 = 1234;
-        long seed2 = 1337;
-        ScenarioGenerator scenarioGenerator = new ScenarioGenerator();
-        ScenarioGenerator scenarioGenerator2 = new ScenarioGenerator(seed1);
-        ScenarioGenerator scenarioGenerator3 = new ScenarioGenerator(seed2, 1, 7, 1, 7);
 
-        // getter
-        Human person = scenarioGenerator.getRandomHuman();
-        Animal animal = scenarioGenerator3.getRandomAnimal();
-
-        // setter
-        scenarioGenerator.setPassengerCountMin(1);
-        scenarioGenerator.setPassengerCountMax(7);
-        scenarioGenerator.setPedestrianCountMin(1);
-        scenarioGenerator.setPedestrianCountMax(7);
-
-        // same seed same scenario features
-        ScenarioGenerator tmp = new ScenarioGenerator(seed1);
-        Scenario scenario1 = scenarioGenerator2.generate();
-        Scenario scenario2 = tmp.generate();
-        System.out.println(scenario1);
-        System.out.println(scenario2);
-
-        System.out.println (scenario1.toString().equals(scenario2.toString()));
-
+        Audit a=new Audit();
+        a.run(1);
+        System.out.println(a);
+        a.createCharacteristicLists();
 
 
 

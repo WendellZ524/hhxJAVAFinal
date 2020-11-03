@@ -159,7 +159,8 @@ public class ScenarioGenerator {
      * @return a newly created Scenario instance
      */
     public Scenario createScenario(Persona[] passenger, Persona[] pedestrian, boolean greenLight,
-                                   int randomPassengerHumanNum, int randomPedsHumanNum) {
+                                   int randomPassengerHumanNum, int randomPedestrianHumanNum,
+                                   boolean passengerAsYou,boolean pedestrianAsYou) {
         // generate a scenario object
         Scenario s = new Scenario(passenger, pedestrian, greenLight);
         // add objects to passenger
@@ -169,12 +170,27 @@ public class ScenarioGenerator {
         for (int i = randomPassengerHumanNum; i < passenger.length; i++) {
             passenger[i] = getRandomAnimal();
         }
+
         // add objects to pedestrian
-        for (int i = 0; i < randomPedsHumanNum; i++) {
+        for (int i = 0; i < randomPedestrianHumanNum; i++) {
             pedestrian[i] = getRandomHuman();
         }
-        for (int i = randomPedsHumanNum; i < pedestrian.length; i++) {
+        for (int i = randomPedestrianHumanNum; i < pedestrian.length; i++) {
             pedestrian[i] = getRandomAnimal();
+        }
+
+        // add "AsYou" to passenger or pedestrian
+        for(Persona i:passenger){
+            if(i instanceof Human){
+                ((Human)i).setAsYou(passengerAsYou);
+                break;
+            }
+        }
+        for(Persona i:pedestrian){
+            if(i instanceof Human){
+                ((Human)i).setAsYou(pedestrianAsYou);
+                break;
+            }
         }
         return s;
     }
@@ -214,8 +230,19 @@ public class ScenarioGenerator {
 
             // generate green or red light (green is legal)
             boolean greenLight = random.nextBoolean();
+
+            // generate "AsYou" boolean
+            boolean passengerIsYou =random.nextBoolean();
+            // AsYou can not both true
+            boolean pedestrianIsYou;
+            if(! passengerIsYou){
+                pedestrianIsYou=random.nextBoolean();
+            }
+            else {
+                pedestrianIsYou=false;
+            }
             return createScenario(passenger, pedestrian, greenLight,
-                    randomPassengerHumanNum, randomPedsHumanNum);
+                    randomPassengerHumanNum, randomPedsHumanNum,passengerIsYou,pedestrianIsYou);
         }
         else {
             Random randomWithSeed=new Random(seed);
@@ -235,8 +262,19 @@ public class ScenarioGenerator {
 
             // generate green or red light (green is legal)
             boolean greenLight = randomWithSeed.nextBoolean();
+
+            // generate "AsYou" boolean
+            boolean passengerIsYou =randomWithSeed.nextBoolean();
+            // AsYou can not both true
+            boolean pedestrianIsYou;
+            if(! passengerIsYou){
+                pedestrianIsYou=randomWithSeed.nextBoolean();
+            }
+            else {
+                pedestrianIsYou=false;
+            }
             return createScenario(passenger, pedestrian, greenLight,
-                    randomPassengerHumanNum, randomPedsHumanNum);
+                    randomPassengerHumanNum, randomPedsHumanNum,passengerIsYou,pedestrianIsYou);
         }
 
             //还没有设置setAsYou的功能

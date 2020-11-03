@@ -12,6 +12,8 @@ public class Scenario {
     private Persona[] pedestrians;
     private boolean inLane=false;
 
+    public Scenario() {
+    }
 
     public Scenario(Persona[] passengers,Persona[] pedestrians, boolean isLegalCrossing) {
         this.passengers = passengers;
@@ -141,8 +143,5 @@ public class Scenario {
     }
 
 
-    public Scenario() {
-
-    }
 
 }
