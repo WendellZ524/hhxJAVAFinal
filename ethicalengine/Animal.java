@@ -43,11 +43,6 @@ public class Animal extends Persona {
         }
     }
 
-    //tester
-//    public static void main(String[] args) {
-//        Animal a1 = new Animal("bird");
-//        a1.setPet(true);
-//        System.out.println(a1);
-//    }
+
 }
 

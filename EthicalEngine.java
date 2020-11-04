@@ -106,7 +106,7 @@ public class EthicalEngine {
 
         Audit a=new Audit();
         a.run(1);
-        a.createCharacteristicLists();
+        a.calculateSurvivalRate();
         System.out.println(a);
 
 

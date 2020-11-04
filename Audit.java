@@ -1,7 +1,4 @@
-import ethicalengine.Human;
-import ethicalengine.Persona;
-import ethicalengine.Scenario;
-import ethicalengine.ScenarioGenerator;
+import ethicalengine.*;
 
 
 import java.util.ArrayList;
@@ -10,25 +7,52 @@ public class Audit {
     private String auditType = "Unspecified";
     private static ArrayList<Scenario> scenarioList = new ArrayList<Scenario>();
     private int roundCounts = 0;
+    private int passengerSurviveCounts = 0;
+
 
     // set up lists for corresponding attributes
-    ArrayList<Integer> maleList = new ArrayList<>();
-    ArrayList<Integer> femaleList = new ArrayList<>();
-    ArrayList<Integer> averageBodyList = new ArrayList<>();
-    ArrayList<Integer> athleticBodyList = new ArrayList<>();
-    ArrayList<Integer> overweightBodyList = new ArrayList<>();
+    private ArrayList<Integer> maleList = new ArrayList<>();
+    private ArrayList<Integer> femaleList = new ArrayList<>();
+    private ArrayList<Integer> averageBodyList = new ArrayList<>();
+    private ArrayList<Integer> athleticBodyList = new ArrayList<>();
+    private ArrayList<Integer> overweightBodyList = new ArrayList<>();
+    // lists specifically for human
+    private ArrayList<Integer> doctorList = new ArrayList<>();
+    private ArrayList<Integer> ceoList = new ArrayList<>();
+    private ArrayList<Integer> criminalList = new ArrayList<>();
+    private ArrayList<Integer> homelessList = new ArrayList<>();
+    private ArrayList<Integer> unemployedList = new ArrayList<>();
+    private ArrayList<Integer> teacherList = new ArrayList<>();
+    private ArrayList<Integer> cleanerList = new ArrayList<>();
+    private ArrayList<Integer> pregnantList = new ArrayList<>();
+    private ArrayList<Integer> babyList = new ArrayList<>();
+    private ArrayList<Integer> childList = new ArrayList<>();
+    private ArrayList<Integer> adultList = new ArrayList<>();
+    private ArrayList<Integer> seniorList = new ArrayList<>();
+    // lists specifically for animal and related scenarios
+    private ArrayList<Integer> animalList = new ArrayList<>();
+    private ArrayList<Integer> humanList = new ArrayList<>();
+    private ArrayList<Integer> petList = new ArrayList<>();
+    private ArrayList<Integer> legalityList = new ArrayList<>();
+    //    ArrayList<Integer> passengerNumList = new ArrayList<>();
+    private ArrayList<Integer> birdList = new ArrayList<>();
+    private ArrayList<Integer> dogList = new ArrayList<>();
+    private ArrayList<Integer> catList = new ArrayList<>();
+    private ArrayList<Integer> turtleList = new ArrayList<>();
+    private ArrayList<Integer> cowList = new ArrayList<>();
+    private ArrayList<Integer> pigList = new ArrayList<>();
+    private ArrayList<Integer> deerList = new ArrayList<>();
+    private ArrayList<Integer> elephantList = new ArrayList<>();
 
+    private double isLegalCounts, humanSurvive, animalSurvive, petSurvive, maleSurvive, femaleSurvive, avgBodySurvive, athleticBodySurvive, overweightBodySurvive,
+            babySurvive, childSurvive, adultSurvive, seniorSurvive, doctorSurvive, ceoSurvive,
+            criminalSurvive, homelessSurvive, unemployedSurvive, teacherSurvive, cleanerSurvive, pregnantSurvive;
 
-
-    ArrayList<Integer> babyList = new ArrayList<>();
-    ArrayList<Integer> childList = new ArrayList<>();
-    ArrayList<Integer> adultList = new ArrayList<>();
-    ArrayList<Integer> seniorList = new ArrayList<>();
-
-    double maleSurvive, femaleSurvive, babySurvive, childSurvive, adultSurvive, seniorSurvive;
-
-    double  maleSurviveRate, femaleSurviveRate, babySurviveRate, childSurviveRate, adultSurviveRate,
-            seniorSurviveRate;
+    private double passengerSurviveRates, pedestrianSurviveRate, isLegalSurviveRate,
+            humanSurviveRate, animalSurviveRate, petSurviveRate, maleSurviveRate, femaleSurviveRate, avgBodySurviveRate, athleticSurviveRate,
+            overweightBodySurviveRate, babySurviveRate, childSurviveRate, adultSurviveRate, seniorSurviveRate,
+            doctorSurviveRate, ceoSurviveRate, criminalSurviveRate, homelessSurviveRate, unemployedSurviveRate,
+            teacherSurviveRate, cleanerSurviveRate, pregnantSurviveRate;
 
 
     public Audit() {
@@ -51,8 +75,70 @@ public class Audit {
     }
 
     /**
+     * The private method is for adding numbers to attribute lists only for human
+     *
+     * @param liveFlag comes from Live() after deciding which group live
+     * @param human    comes from the scenarioList that contains human objects
+     */
+    private void addHumanCategoryList(int liveFlag, Human human) {
+        if (human.getAgeCategory().toString().equals("BABY")) {
+            babyList.add(liveFlag);
+        } else if (human.getAgeCategory().toString().equals("CHILD")) {
+            childList.add(liveFlag);
+        } else if (human.getAgeCategory().toString().equals("ADULT")) {
+            adultList.add(liveFlag);
+        } else if (human.getAgeCategory().toString().equals("SENIOR")) {
+            seniorList.add(liveFlag);
+        }
+
+        if (human.getProfession().toString().equals("DOCTOR")) {
+            doctorList.add(liveFlag);
+        } else if (human.getProfession().toString().equals("CEO")) {
+            ceoList.add(liveFlag);
+        } else if (human.getProfession().toString().equals("CRIMINAL")) {
+            criminalList.add(liveFlag);
+        } else if (human.getProfession().toString().equals("HOMELESS")) {
+            homelessList.add(liveFlag);
+        } else if (human.getProfession().toString().equals("UNEMPLOYED")) {
+            unemployedList.add(liveFlag);
+        } else if (human.getProfession().toString().equals("TEACHER")) {
+            teacherList.add(liveFlag);
+        } else if (human.getProfession().toString().equals("CLEANER")) {
+            cleanerList.add(liveFlag);
+        }
+    }
+
+    /**
+     * The private method is for adding numbers to attribute lists only for animal
+     *
+     * @param liveFlag comes from Live() after deciding which group live
+     * @param animal   comes from the scenarioList that contains animal objects
+     */
+    private void addAnimalCategoryList(int liveFlag, Animal animal) {
+        if (animal.getSpecies().equals("bird")) {
+            birdList.add(liveFlag);
+        } else if (animal.getSpecies().equals("dog")) {
+            dogList.add(liveFlag);
+        } else if (animal.getSpecies().equals("cat")) {
+            catList.add(liveFlag);
+        } else if (animal.getSpecies().equals("turtle")) {
+            turtleList.add(liveFlag);
+        } else if (animal.getSpecies().equals("cow")) {
+            cowList.add(liveFlag);
+        } else if (animal.getSpecies().equals("pig")) {
+            pigList.add(liveFlag);
+        } else if (animal.getSpecies().equals("deer")) {
+            deerList.add(liveFlag);
+        } else if (animal.getSpecies().equals("elephant")) {
+            elephantList.add(liveFlag);
+        }
+
+    }
+
+    /**
      * This method set the flag (0 or 1), which correspondingly represents death or live in each
      * attributes lists
+     *
      * @param passengerLive generated from decide method (EthicalEngine) that represents if
      *                      the passenger is alive.
      */
@@ -62,51 +148,55 @@ public class Audit {
         Persona[] pedestrian;
 
         // passenger live implies pedestrians die, vice versa
-        if(passengerLive){
-            passengerLiveFlag=1;
-            pedestrianLiveFlag=0;
-        }
-        else {
-            passengerLiveFlag=0;
-            pedestrianLiveFlag=1;
+        // add counter to count number of cases that passenger survive
+        if (passengerLive) {
+            passengerSurviveCounts += 1;
+            passengerLiveFlag = 1;
+            pedestrianLiveFlag = 0;
+        } else {
+            passengerLiveFlag = 0;
+            pedestrianLiveFlag = 1;
         }
 
         // Firstly, get passenger array in each scenario
         for (Scenario i : scenarioList) {
+            // legality check at the same time
+            if (i.isLegalCrossing()) {
+                legalityList.add(1);
+            } else {
+                legalityList.add(0);
+            }
+
             passenger = i.getPassengers();
             for (Persona j : passenger) {
                 // find shared persona attributes at the beginning
                 // int 1 means live, int 0 means dead in the list
                 if (j.getGender().toString().equals("MALE")) {
                     maleList.add(passengerLiveFlag);
-                }
-                if (j.getGender().toString().equals("FEMALE")) {
+                } else if (j.getGender().toString().equals("FEMALE")) {
                     femaleList.add(passengerLiveFlag);
                 }
-                if(j.getBodyType().toString().equals("AVERAGE")){
+                if (j.getBodyType().toString().equals("AVERAGE")) {
                     averageBodyList.add(passengerLiveFlag);
-                }
-                if(j.getBodyType().toString().equals("ATHLETIC")){
+                } else if (j.getBodyType().toString().equals("ATHLETIC")) {
                     athleticBodyList.add(passengerLiveFlag);
-                }
-                if(j.getBodyType().toString().equals("OVERWEIGHT")){
+                } else if (j.getBodyType().toString().equals("OVERWEIGHT")) {
                     overweightBodyList.add(passengerLiveFlag);
                 }
 
                 if (j instanceof Human) {
-                    if (((Human) j).getAgeCategory().toString().equals("BABY")) {
-                        babyList.add(passengerLiveFlag);
+                    humanList.add(passengerLiveFlag);
+                    addHumanCategoryList(passengerLiveFlag, (Human) j);
+                    if (((Human) j).isPregnant()) {
+                        pregnantList.add(passengerLiveFlag);
                     }
-                    if (((Human) j).getAgeCategory().toString().equals("CHILD")) {
-                        childList.add(passengerLiveFlag);
+                }
+                if (j instanceof Animal) {
+                    animalList.add(passengerLiveFlag);
+                    addAnimalCategoryList(passengerLiveFlag, (Animal) j);
+                    if (((Animal) j).isPet()) {
+                        petList.add(passengerLiveFlag);
                     }
-                    if (((Human) j).getAgeCategory().toString().equals("ADULT")) {
-                        adultList.add(passengerLiveFlag);
-                    }
-                    if (((Human) j).getAgeCategory().toString().equals("SENIOR")) {
-                        seniorList.add(passengerLiveFlag);
-                    }
-
                 }
             }
 
@@ -120,28 +210,51 @@ public class Audit {
                 if (j.getGender().toString().equals("FEMALE")) {
                     femaleList.add(pedestrianLiveFlag);
                 }
-                if(j.getBodyType().toString().equals("AVERAGE")){
+                if (j.getBodyType().toString().equals("AVERAGE")) {
                     averageBodyList.add(pedestrianLiveFlag);
                 }
-                if(j.getBodyType().toString().equals("ATHLETIC")){
+                if (j.getBodyType().toString().equals("ATHLETIC")) {
                     athleticBodyList.add(pedestrianLiveFlag);
                 }
-                if(j.getBodyType().toString().equals("OVERWEIGHT")){
+                if (j.getBodyType().toString().equals("OVERWEIGHT")) {
                     overweightBodyList.add(pedestrianLiveFlag);
                 }
 
                 if (j instanceof Human) {
-                    if (((Human) j).getAgeCategory().toString().equals("BABY")) {
-                        babyList.add(pedestrianLiveFlag);
+                    humanList.add(pedestrianLiveFlag);
+                    addHumanCategoryList(pedestrianLiveFlag, (Human) j);
+
+//                    if (((Human) j).getProfession().toString().equals("DOCTOR")) {
+//                        doctorList.add(pedestrianLiveFlag);
+//                    }
+//                    if (((Human) j).getProfession().toString().equals("CEO")) {
+//                        ceoList.add(pedestrianLiveFlag);
+//                    }
+//                    if (((Human) j).getProfession().toString().equals("CRIMINAL")) {
+//                        criminalList.add(pedestrianLiveFlag);
+//                    }
+//                    if (((Human) j).getProfession().toString().equals("HOMELESS")) {
+//                        homelessList.add(pedestrianLiveFlag);
+//                    }
+//                    if (((Human) j).getProfession().toString().equals("UNEMPLOYED")) {
+//                        unemployedList.add(pedestrianLiveFlag);
+//                    }
+//                    if (((Human) j).getProfession().toString().equals("TEACHER")) {
+//                        teacherList.add(pedestrianLiveFlag);
+//                    }
+//                    if (((Human) j).getProfession().toString().equals("CLEANER")) {
+//                        cleanerList.add(pedestrianLiveFlag);
+//                    }
+                    if (((Human) j).isPregnant()) {
+                        pregnantList.add(pedestrianLiveFlag);
                     }
-                    if (((Human) j).getAgeCategory().toString().equals("CHILD")) {
-                        childList.add(pedestrianLiveFlag);
-                    }
-                    if (((Human) j).getAgeCategory().toString().equals("ADULT")) {
-                        adultList.add(pedestrianLiveFlag);
-                    }
-                    if (((Human) j).getAgeCategory().toString().equals("SENIOR")) {
-                        seniorList.add(pedestrianLiveFlag);
+                }
+
+                if (j instanceof Animal) {
+                    animalList.add(pedestrianLiveFlag);
+                    addAnimalCategoryList(pedestrianLiveFlag, (Animal) j);
+                    if (((Animal) j).isPet()) {
+                        petList.add(pedestrianLiveFlag);
                     }
                 }
             }
@@ -149,24 +262,50 @@ public class Audit {
     }
 
 
-
     /**
      * This method runs the decide method and calculate the survival rate for different attributes.
      */
-    public void createCharacteristicLists() {
+    public void calculateSurvivalRate() {
         for (Scenario i : scenarioList) {
             // run Ethical Engine's decide method
             String groupCanLive = EthicalEngine.decide(i).toString();
 
             if (groupCanLive.equals("PASSENGERS")) {
                 Live(true);
-
             } else {
                 Live(false);
-
             }
         }
+        passengerSurviveRates = passengerSurviveCounts / (double) roundCounts;
+        pedestrianSurviveRate = (double) (roundCounts - passengerSurviveCounts) / roundCounts;
 
+        for (Integer i : legalityList) {
+            if (i == 1) {
+                isLegalCounts += 1;
+            }
+        }
+        isLegalSurviveRate = isLegalCounts / legalityList.size();
+
+        for (Integer i : humanList) {
+            if (i == 1) {
+                humanSurvive += 1;
+            }
+        }
+        humanSurviveRate = humanSurvive / humanList.size();
+
+        for (Integer i : animalList) {
+            if (i == 1) {
+                animalSurvive += 1;
+            }
+        }
+        animalSurviveRate = animalSurvive / animalList.size();
+
+        for (Integer i : petList) {
+            if (i == 1) {
+                petSurvive += 1;
+            }
+        }
+        petSurviveRate = petSurvive / petList.size();
 
         for (Integer i : maleList) {
             if (i == 1) {
@@ -209,8 +348,64 @@ public class Audit {
             }
         }
         seniorSurviveRate = seniorSurvive / seniorList.size();
-    }
 
+        for (Integer i : pregnantList) {
+            if (i == 1) {
+                pregnantSurvive += 1;
+            }
+        }
+        pregnantSurviveRate = pregnantSurvive / pregnantList.size();
+
+        for (Integer i : doctorList) {
+            if (i == 1) {
+                doctorSurvive += 1;
+            }
+        }
+        doctorSurviveRate = doctorSurvive / doctorList.size();
+
+        for (Integer i : ceoList) {
+            if (i == 1) {
+                ceoSurvive += 1;
+            }
+        }
+        ceoSurviveRate = ceoSurvive / ceoList.size();
+
+        for (Integer i : homelessList) {
+            if (i == 1) {
+                homelessSurvive += 1;
+            }
+        }
+        homelessSurviveRate = homelessSurvive / homelessList.size();
+
+        for (Integer i : criminalList) {
+            if (i == 1) {
+                criminalSurvive += 1;
+            }
+        }
+        criminalSurviveRate = criminalSurvive / criminalList.size();
+
+        for (Integer i : unemployedList) {
+            if (i == 1) {
+                unemployedSurvive += 1;
+            }
+        }
+        unemployedSurviveRate = unemployedSurvive / unemployedList.size();
+
+        for (Integer i : teacherList) {
+            if (i == 1) {
+                teacherSurvive += 1;
+            }
+        }
+        teacherSurviveRate = teacherSurvive / teacherList.size();
+
+        for (Integer i : cleanerList) {
+            if (i == 1) {
+                cleanerSurvive += 1;
+            }
+        }
+        cleanerSurviveRate = cleanerSurvive / cleanerList.size();
+
+    }
 
 
     public String toString() {
@@ -228,8 +423,11 @@ public class Audit {
         } else {
             result = "no audit available";
         }
-        return result+" male survival: "+maleSurviveRate+" femalsurvival: "+femaleSurviveRate+
-                " baby "+ babySurviveRate+" child "+childSurviveRate+" adult total "+adultList.size()+
-                " adult survive: "+adultSurvive+" adult survive rate:"+adultSurviveRate+" senior "+seniorSurviveRate;
+        return result + " male survival: " + maleSurviveRate + " femalsurvival: " + femaleSurviveRate +
+                " baby " + babySurviveRate + " child " + childSurviveRate + " adult total " + adultList.size() +
+                " adult survive: " + adultSurvive + " adult survive rate:" + adultSurviveRate + " senior " + seniorSurviveRate
+                + "\n" + "DOCTOR " + doctorList.size() + "\n" + "human " + humanSurviveRate
+                + "\n" + "animal " + animalSurviveRate + "\n" + "passenger " + passengerSurviveRates
+                + "\n" + "pedes " + pedestrianSurviveRate + "\n" + "legal? " + isLegalSurviveRate;
     }
 }
