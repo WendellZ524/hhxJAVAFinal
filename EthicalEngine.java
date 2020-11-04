@@ -91,6 +91,7 @@ public class EthicalEngine {
             }
 
         }
+        // 打印了两个群体的存活率
         System.out.println("passenger:" + passengerWeight);
         System.out.println("peds:" + pedestrianWeight);
         if (passengerWeight > pedestrianWeight) {
@@ -105,11 +106,8 @@ public class EthicalEngine {
 
         Audit a=new Audit();
         a.run(1);
-        System.out.println(a);
         a.createCharacteristicLists();
-
-
-
+        System.out.println(a);
 
 
 

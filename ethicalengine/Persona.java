@@ -62,7 +62,6 @@ public abstract class Persona {
 
     public enum Gender {
         MALE,FEMALE,UNKNOWN;
-
     }
 
     public enum BodyType{
