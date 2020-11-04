@@ -1,13 +1,17 @@
 import ethicalengine.*;
+import java.util.*;
 
-
-import java.util.ArrayList;
 
 public class Audit {
     private String auditType = "Unspecified";
     private static ArrayList<Scenario> scenarioList = new ArrayList<Scenario>();
+    // the hashmap is the aggregate storage of all values to be output
+    private static HashMap<String,Double> map =new HashMap<String ,Double>();
     private int roundCounts = 0;
     private int passengerSurviveCounts = 0;
+    private double sumAliveHumanAge=0;
+    private double aliveHumanAvgAge=0;
+
 
 
     // set up lists for corresponding attributes
@@ -33,7 +37,8 @@ public class Audit {
     private ArrayList<Integer> animalList = new ArrayList<>();
     private ArrayList<Integer> humanList = new ArrayList<>();
     private ArrayList<Integer> petList = new ArrayList<>();
-    private ArrayList<Integer> legalityList = new ArrayList<>();
+    private ArrayList<Integer> greenList = new ArrayList<>();
+    private ArrayList<Integer> redList = new ArrayList<>();
     //    ArrayList<Integer> passengerNumList = new ArrayList<>();
     private ArrayList<Integer> birdList = new ArrayList<>();
     private ArrayList<Integer> dogList = new ArrayList<>();
@@ -44,15 +49,18 @@ public class Audit {
     private ArrayList<Integer> deerList = new ArrayList<>();
     private ArrayList<Integer> elephantList = new ArrayList<>();
 
-    private double isLegalCounts, humanSurvive, animalSurvive, petSurvive, maleSurvive, femaleSurvive, avgBodySurvive, athleticBodySurvive, overweightBodySurvive,
+    private double greenSurvive, redSurvive,humanSurvive, animalSurvive, petSurvive, maleSurvive, femaleSurvive, avgBodySurvive, athleticBodySurvive, overweightBodySurvive,
             babySurvive, childSurvive, adultSurvive, seniorSurvive, doctorSurvive, ceoSurvive,
-            criminalSurvive, homelessSurvive, unemployedSurvive, teacherSurvive, cleanerSurvive, pregnantSurvive;
+            criminalSurvive, homelessSurvive, unemployedSurvive, teacherSurvive, cleanerSurvive, pregnantSurvive,
+            birdSurvive, dogSurvive, catSurvive, turtleSurvive, cowSurvive, pigSurvive, elephantSurvive, deerSurvive;
 
-    private double passengerSurviveRates, pedestrianSurviveRate, isLegalSurviveRate,
+    private double passengerSurviveRates, pedestrianSurviveRate, greenSurviveRate,redSurviveRate,
             humanSurviveRate, animalSurviveRate, petSurviveRate, maleSurviveRate, femaleSurviveRate, avgBodySurviveRate, athleticSurviveRate,
             overweightBodySurviveRate, babySurviveRate, childSurviveRate, adultSurviveRate, seniorSurviveRate,
             doctorSurviveRate, ceoSurviveRate, criminalSurviveRate, homelessSurviveRate, unemployedSurviveRate,
-            teacherSurviveRate, cleanerSurviveRate, pregnantSurviveRate;
+            teacherSurviveRate, cleanerSurviveRate, pregnantSurviveRate,
+            birdSurviveRate, dogSurviveRate, catSurviveRate, turtleSurviveRate, cowSurviveRate, pigSurviveRate, elephantSurviveRate,
+            deerSurviveRate;
 
 
     public Audit() {
@@ -162,9 +170,11 @@ public class Audit {
         for (Scenario i : scenarioList) {
             // legality check at the same time
             if (i.isLegalCrossing()) {
-                legalityList.add(1);
+                greenList.add(1);
+                redList.add(0);
             } else {
-                legalityList.add(0);
+                greenList.add(0);
+                redList.add(1);
             }
 
             passenger = i.getPassengers();
@@ -190,6 +200,11 @@ public class Audit {
                     if (((Human) j).isPregnant()) {
                         pregnantList.add(passengerLiveFlag);
                     }
+                    // calculate alive average people age
+                    if(passengerLive){
+                        sumAliveHumanAge+=j.getAge();
+                    }
+
                 }
                 if (j instanceof Animal) {
                     animalList.add(passengerLiveFlag);
@@ -248,6 +263,11 @@ public class Audit {
                     if (((Human) j).isPregnant()) {
                         pregnantList.add(pedestrianLiveFlag);
                     }
+                    // calculate alive average people age
+                    if(! passengerLive){
+                        sumAliveHumanAge+=j.getAge();
+                    }
+
                 }
 
                 if (j instanceof Animal) {
@@ -279,12 +299,20 @@ public class Audit {
         passengerSurviveRates = passengerSurviveCounts / (double) roundCounts;
         pedestrianSurviveRate = (double) (roundCounts - passengerSurviveCounts) / roundCounts;
 
-        for (Integer i : legalityList) {
+
+        for (Integer i : greenList) {
             if (i == 1) {
-                isLegalCounts += 1;
+                greenSurvive += 1;
             }
         }
-        isLegalSurviveRate = isLegalCounts / legalityList.size();
+        greenSurviveRate = greenSurvive / greenList.size();
+
+        for (Integer i : redList) {
+            if (i == 1) {
+                redSurvive += 1;
+            }
+        }
+        redSurviveRate = redSurvive / redList.size();
 
         for (Integer i : humanList) {
             if (i == 1) {
@@ -292,6 +320,9 @@ public class Audit {
             }
         }
         humanSurviveRate = humanSurvive / humanList.size();
+        // calculate average age for alive human
+        aliveHumanAvgAge= sumAliveHumanAge / humanSurvive;
+
 
         for (Integer i : animalList) {
             if (i == 1) {
@@ -320,6 +351,27 @@ public class Audit {
             }
         }
         femaleSurviveRate = femaleSurvive / femaleList.size();
+
+        for (Integer i : averageBodyList) {
+            if (i == 1) {
+                avgBodySurvive += 1;
+            }
+        }
+        avgBodySurviveRate = avgBodySurvive / averageBodyList.size();
+
+        for (Integer i : athleticBodyList) {
+            if (i == 1) {
+                athleticBodySurvive += 1;
+            }
+        }
+        athleticSurviveRate = athleticBodySurvive / athleticBodyList.size();
+
+        for (Integer i : overweightBodyList) {
+            if (i == 1) {
+                overweightBodySurvive += 1;
+            }
+        }
+        overweightBodySurviveRate = overweightBodySurvive / overweightBodyList.size();
 
         for (Integer i : babyList) {
             if (i == 1) {
@@ -405,7 +457,93 @@ public class Audit {
         }
         cleanerSurviveRate = cleanerSurvive / cleanerList.size();
 
+        for (Integer i : birdList) {
+            if (i == 1) {
+                birdSurvive += 1;
+            }
+        }
+        birdSurviveRate = birdSurvive / birdList.size();
+
+        for (Integer i : dogList) {
+            if (i == 1) {
+                dogSurvive += 1;
+            }
+        }
+        dogSurviveRate = dogSurvive / dogList.size();
+
+        for (Integer i : catList) {
+            if (i == 1) {
+                catSurvive += 1;
+            }
+        }
+        catSurviveRate = catSurvive / catList.size();
+
+        for (Integer i : turtleList) {
+            if (i == 1) {
+                turtleSurvive += 1;
+            }
+        }
+        turtleSurviveRate = turtleSurvive / turtleList.size();
+
+        for (Integer i : cowList) {
+            if (i == 1) {
+                cowSurvive += 1;
+            }
+        }
+        cowSurviveRate = cowSurvive / cowList.size();
+
+        for (Integer i : pigList) {
+            if (i == 1) {
+                pigSurvive += 1;
+            }
+        }
+        pigSurviveRate = pigSurvive / pigList.size();
+
+        for (Integer i : deerList) {
+            if (i == 1) {
+                deerSurvive += 1;
+            }
+        }
+        deerSurviveRate = deerSurvive / deerList.size();
+
+        for (Integer i : elephantList) {
+            if (i == 1) {
+                elephantSurvive += 1;
+            }
+        }
+        elephantSurviveRate = elephantSurvive / elephantList.size();
     }
+
+
+    // put key and value pairs into hashmap
+    public void addIntoHashMap(HashMap<String,Double> map){
+        map.put("passengers",passengerSurviveRates);
+        map.put("pedestrians",pedestrianSurviveRate);
+        map.put("animal",animalSurviveRate);
+        map.put("human",humanSurviveRate);
+        map.put("pet",petSurviveRate);
+        map.put("overweight",overweightBodySurviveRate);
+        map.put("average",avgBodySurviveRate);
+        map.put("athletic",athleticSurviveRate);
+        map.put("male",maleSurviveRate);
+        map.put("female",femaleSurviveRate);
+        map.put("pregnant",pregnantSurviveRate);
+        map.put("green", greenSurviveRate);
+        map.put("red", redSurviveRate);
+
+        map.put("doctor",doctorSurviveRate);
+        map.put("ceo",ceoSurviveRate);
+        map.put("criminal",criminalSurviveRate);
+        map.put("homeless",homelessSurviveRate);
+        map.put("teacher",teacherSurviveRate);
+        map.put("cleaner",cleanerSurviveRate);
+        map.put("unemployed",unemployedSurviveRate);
+
+
+
+    }
+
+
 
 
     public String toString() {
@@ -428,6 +566,7 @@ public class Audit {
                 " adult survive: " + adultSurvive + " adult survive rate:" + adultSurviveRate + " senior " + seniorSurviveRate
                 + "\n" + "DOCTOR " + doctorList.size() + "\n" + "human " + humanSurviveRate
                 + "\n" + "animal " + animalSurviveRate + "\n" + "passenger " + passengerSurviveRates
-                + "\n" + "pedes " + pedestrianSurviveRate + "\n" + "legal? " + isLegalSurviveRate;
+                + "\n" + "pedes " + pedestrianSurviveRate + "\n" + "legal? " + greenSurviveRate +
+                " alivehuman "+humanSurvive +"avg age "+aliveHumanAvgAge;
     }
 }

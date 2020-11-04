@@ -1,5 +1,7 @@
 import ethicalengine.*;
 
+
+
 /**
  * COMP90041, Sem2, 2020: Final Project: A skeleton code for you to update
  *
@@ -106,8 +108,10 @@ public class EthicalEngine {
 
         Audit a=new Audit();
         a.run(1);
+        a.setAuditType("黄海翔的test");
         a.calculateSurvivalRate();
         System.out.println(a);
+
 
 
 
