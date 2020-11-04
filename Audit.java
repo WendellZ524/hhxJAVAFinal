@@ -11,9 +11,15 @@ public class Audit {
     private static ArrayList<Scenario> scenarioList = new ArrayList<Scenario>();
     private int roundCounts = 0;
 
-    // 这些list后面要放到方法外面
+    // set up lists for corresponding attributes
     ArrayList<Integer> maleList = new ArrayList<>();
     ArrayList<Integer> femaleList = new ArrayList<>();
+    ArrayList<Integer> averageBodyList = new ArrayList<>();
+    ArrayList<Integer> athleticBodyList = new ArrayList<>();
+    ArrayList<Integer> overweightBodyList = new ArrayList<>();
+
+
+
     ArrayList<Integer> babyList = new ArrayList<>();
     ArrayList<Integer> childList = new ArrayList<>();
     ArrayList<Integer> adultList = new ArrayList<>();
@@ -44,265 +50,124 @@ public class Audit {
         roundCounts = runs;
     }
 
-    public void passengerLive() {
-        // Audit为每一个种类（Body，baby）开一个list，0生1死
+    /**
+     * This method set the flag (0 or 1), which correspondingly represents death or live in each
+     * attributes lists
+     * @param passengerLive generated from decide method (EthicalEngine) that represents if
+     *                      the passenger is alive.
+     */
+    public void Live(boolean passengerLive) {
+        int passengerLiveFlag, pedestrianLiveFlag;
         Persona[] passenger;
         Persona[] pedestrian;
+
+        // passenger live implies pedestrians die, vice versa
+        if(passengerLive){
+            passengerLiveFlag=1;
+            pedestrianLiveFlag=0;
+        }
+        else {
+            passengerLiveFlag=0;
+            pedestrianLiveFlag=1;
+        }
+
+        // Firstly, get passenger array in each scenario
         for (Scenario i : scenarioList) {
-            // get passenger array in each scenario
             passenger = i.getPassengers();
             for (Persona j : passenger) {
-                // find shared persona variables first
+                // find shared persona attributes at the beginning
                 // int 1 means live, int 0 means dead in the list
                 if (j.getGender().toString().equals("MALE")) {
-                    maleList.add(1);
+                    maleList.add(passengerLiveFlag);
                 }
                 if (j.getGender().toString().equals("FEMALE")) {
-                    femaleList.add(1);
+                    femaleList.add(passengerLiveFlag);
+                }
+                if(j.getBodyType().toString().equals("AVERAGE")){
+                    averageBodyList.add(passengerLiveFlag);
+                }
+                if(j.getBodyType().toString().equals("ATHLETIC")){
+                    athleticBodyList.add(passengerLiveFlag);
+                }
+                if(j.getBodyType().toString().equals("OVERWEIGHT")){
+                    overweightBodyList.add(passengerLiveFlag);
                 }
 
                 if (j instanceof Human) {
                     if (((Human) j).getAgeCategory().toString().equals("BABY")) {
-                        babyList.add(1);
+                        babyList.add(passengerLiveFlag);
                     }
                     if (((Human) j).getAgeCategory().toString().equals("CHILD")) {
-                        childList.add(1);
+                        childList.add(passengerLiveFlag);
                     }
                     if (((Human) j).getAgeCategory().toString().equals("ADULT")) {
-                        adultList.add(1);
+                        adultList.add(passengerLiveFlag);
                     }
                     if (((Human) j).getAgeCategory().toString().equals("SENIOR")) {
-                        seniorList.add(1);
+                        seniorList.add(passengerLiveFlag);
                     }
+
                 }
             }
 
-            // get pedestrian array in each scenario
+            // Secondly, get pedestrian array in each scenario
             pedestrian = i.getPedestrians();
             for (Persona j : pedestrian) {
-                // find shared persona variables first
-                // int 1 means live, int 0 means dead in the list
+                // find shared persona attributes at the beginning
                 if (j.getGender().toString().equals("MALE")) {
-                    maleList.add(0);
+                    maleList.add(pedestrianLiveFlag);
                 }
                 if (j.getGender().toString().equals("FEMALE")) {
-                    femaleList.add(0);
+                    femaleList.add(pedestrianLiveFlag);
+                }
+                if(j.getBodyType().toString().equals("AVERAGE")){
+                    averageBodyList.add(pedestrianLiveFlag);
+                }
+                if(j.getBodyType().toString().equals("ATHLETIC")){
+                    athleticBodyList.add(pedestrianLiveFlag);
+                }
+                if(j.getBodyType().toString().equals("OVERWEIGHT")){
+                    overweightBodyList.add(pedestrianLiveFlag);
                 }
 
                 if (j instanceof Human) {
                     if (((Human) j).getAgeCategory().toString().equals("BABY")) {
-                        babyList.add(0);
+                        babyList.add(pedestrianLiveFlag);
                     }
                     if (((Human) j).getAgeCategory().toString().equals("CHILD")) {
-                        childList.add(0);
+                        childList.add(pedestrianLiveFlag);
                     }
                     if (((Human) j).getAgeCategory().toString().equals("ADULT")) {
-                        adultList.add(0);
+                        adultList.add(pedestrianLiveFlag);
                     }
                     if (((Human) j).getAgeCategory().toString().equals("SENIOR")) {
-                        seniorList.add(0);
+                        seniorList.add(pedestrianLiveFlag);
                     }
                 }
             }
         }
     }
 
-    public void pedestrianLive() {
-        // Audit为每一个种类（Body，baby）开一个list，0生1死
-        System.out.println("乘客死了");
-        Persona[] passenger;
-        Persona[] pedestrian;
 
-        // get passenger array in each scenario
-        for (Scenario i : scenarioList) {
-            passenger = i.getPassengers();
-            for (Persona j : passenger) {
-                // find shared persona variables first
-                // int 1 means live, int 0 means dead in the list
-                if (j.getGender().toString().equals("MALE")) {
-                    maleList.add(0);
-                }
-                if (j.getGender().toString().equals("FEMALE")) {
-                    femaleList.add(0);
-                }
-                if (j instanceof Human) {
-                    if (((Human) j).getAgeCategory().toString().equals("BABY")) {
-                        babyList.add(0);
-                    }
-                    if (((Human) j).getAgeCategory().toString().equals("CHILD")) {
-                        childList.add(0);
-                    }
-                    if (((Human) j).getAgeCategory().toString().equals("ADULT")) {
-                        adultList.add(0);
-                    }
-                    if (((Human) j).getAgeCategory().toString().equals("SENIOR")) {
-                        seniorList.add(0);
-                    }
 
-                }
-            }
-
-            // get pedestrian array in each scenario
-            pedestrian = i.getPedestrians();
-            for (Persona j : pedestrian) {
-                // find shared persona variables first
-                // int 1 means live, int 0 means dead in the list
-                if (j.getGender().toString().equals("MALE")) {
-                    maleList.add(1);
-                }
-                if (j.getGender().toString().equals("FEMALE")) {
-                    femaleList.add(1);
-                }
-
-                if (j instanceof Human) {
-                    if (((Human) j).getAgeCategory().toString().equals("BABY")) {
-                        babyList.add(1);
-                    }
-                    if (((Human) j).getAgeCategory().toString().equals("CHILD")) {
-                        childList.add(1);
-                    }
-                    if (((Human) j).getAgeCategory().toString().equals("ADULT")) {
-                        adultList.add(1);
-                    }
-                    if (((Human) j).getAgeCategory().toString().equals("SENIOR")) {
-                        seniorList.add(1);
-                    }
-                }
-            }
-        }
-    }
-
+    /**
+     * This method runs the decide method and calculate the survival rate for different attributes.
+     */
     public void createCharacteristicLists() {
-        // Audit为每一个种类（Body，baby）开一个list，0生1死
-//        Persona[] passenger;
-//        Persona[] pedestrian;
         for (Scenario i : scenarioList) {
             // run Ethical Engine's decide method
             String groupCanLive = EthicalEngine.decide(i).toString();
 
             if (groupCanLive.equals("PASSENGERS")) {
-                passengerLive();
-
-//                // get passenger array in each scenario
-//                passenger = i.getPassengers();
-//                for (Persona j : passenger) {
-//                    // find shared persona variables first
-//                    // int 1 means live, int 0 means dead in the list
-//                    if (j.getGender().toString().equals("MALE")) {
-//                        maleList.add(1);
-//                    }
-//                    if (j.getGender().toString().equals("FEMALE")) {
-//                        femaleList.add(1);
-//                    }
-//
-//                    if (j instanceof Human) {
-//                        if (((Human) j).getAgeCategory().toString().equals("BABY")) {
-//                            babyList.add(1);
-//                        }
-//                        if (((Human) j).getAgeCategory().toString().equals("CHILD")) {
-//                            childList.add(1);
-//                        }
-//                        if (((Human) j).getAgeCategory().toString().equals("ADULT")) {
-//                            adultList.add(1);
-//                        }
-//                        if (((Human) j).getAgeCategory().toString().equals("SENIOR")) {
-//                            seniorList.add(1);
-//                        }
-//                    }
-//                }
-//
-//                // get pedestrian array in each scenario
-//                pedestrian = i.getPedestrians();
-//                for (Persona j : pedestrian) {
-//                    // find shared persona variables first
-//                    // int 1 means live, int 0 means dead in the list
-//                    if (j.getGender().toString().equals("MALE")) {
-//                        maleList.add(0);
-//                    }
-//                    if (j.getGender().toString().equals("FEMALE")) {
-//                        femaleList.add(0);
-//                    }
-//
-//                    if (j instanceof Human) {
-//                        if (((Human) j).getAgeCategory().toString().equals("BABY")) {
-//                            babyList.add(0);
-//                        }
-//                        if (((Human) j).getAgeCategory().toString().equals("CHILD")) {
-//                            childList.add(0);
-//                        }
-//                        if (((Human) j).getAgeCategory().toString().equals("ADULT")) {
-//                            adultList.add(0);
-//                        }
-//                        if (((Human) j).getAgeCategory().toString().equals("SENIOR")) {
-//                            seniorList.add(0);
-//                        }
-//                    }
-//                }
-
+                Live(true);
 
             } else {
-                pedestrianLive();
-//                // get passenger array in each scenario
-//                System.out.println("乘客死了");
-//                passenger = i.getPassengers();
-//                for (Persona j : passenger) {
-//                    // find shared persona variables first
-//                    // int 1 means live, int 0 means dead in the list
-//                    if (j.getGender().toString().equals("MALE")) {
-//                        maleList.add(0);
-//                    }
-//                    if (j.getGender().toString().equals("FEMALE")) {
-//                        femaleList.add(0);
-//                    }
-//                    if (j instanceof Human) {
-//                        if (((Human) j).getAgeCategory().toString().equals("BABY")) {
-//                            babyList.add(0);
-//                        }
-//                        if (((Human) j).getAgeCategory().toString().equals("CHILD")) {
-//                            childList.add(0);
-//                        }
-//                        if (((Human) j).getAgeCategory().toString().equals("ADULT")) {
-//                            adultList.add(0);
-//                        }
-//                        if (((Human) j).getAgeCategory().toString().equals("SENIOR")) {
-//                            seniorList.add(0);
-//                        }
-//
-//                    }
-//                }
-//
-//                // get pedestrian array in each scenario
-//                pedestrian = i.getPedestrians();
-//                for (Persona j : pedestrian) {
-//                    // find shared persona variables first
-//                    // int 1 means live, int 0 means dead in the list
-//                    if (j.getGender().toString().equals("MALE")) {
-//                        maleList.add(1);
-//                    }
-//                    if (j.getGender().toString().equals("FEMALE")) {
-//                        femaleList.add(1);
-//                    }
-//
-//                    if (j instanceof Human) {
-//                        if (((Human) j).getAgeCategory().toString().equals("BABY")) {
-//                            babyList.add(1);
-//                        }
-//                        if (((Human) j).getAgeCategory().toString().equals("CHILD")) {
-//                            childList.add(1);
-//                        }
-//                        if (((Human) j).getAgeCategory().toString().equals("ADULT")) {
-//                            adultList.add(1);
-//                        }
-//                        if (((Human) j).getAgeCategory().toString().equals("SENIOR")) {
-//                            seniorList.add(1);
-//                        }
-//                    }
-//                }
+                Live(false);
 
             }
         }
 
-        // 考虑分子为0的情况
+
         for (Integer i : maleList) {
             if (i == 1) {
                 maleSurvive += 1;
@@ -363,8 +228,8 @@ public class Audit {
         } else {
             result = "no audit available";
         }
-        return result+"male survival: "+maleSurviveRate+" femalsurvival: "+femaleSurviveRate+
-                "baby "+ babySurviveRate+"child "+childSurviveRate+"adult total "+adultList.size()+
-                " adult survive:"+adultSurvive+" adult survive rate:"+adultSurviveRate+"senior"+seniorSurviveRate;
+        return result+" male survival: "+maleSurviveRate+" femalsurvival: "+femaleSurviveRate+
+                " baby "+ babySurviveRate+" child "+childSurviveRate+" adult total "+adultList.size()+
+                " adult survive: "+adultSurvive+" adult survive rate:"+adultSurviveRate+" senior "+seniorSurviveRate;
     }
 }
