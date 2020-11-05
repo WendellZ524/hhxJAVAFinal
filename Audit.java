@@ -5,9 +5,12 @@ import java.util.*;
 
 public class Audit {
     private String auditType = "Unspecified";
-    private static ArrayList<Scenario> scenarioList = new ArrayList<Scenario>();
+    private ArrayList<Scenario> scenarioList = new ArrayList<Scenario>();
+    private ArrayList<String> resultList = new ArrayList<String>();
     // the hashmap is the aggregate storage of all values to be output
-    private static HashMap<String, Double> map = new HashMap<String, Double>();
+    private HashMap<String, Double> map = new HashMap<String, Double>();
+    private HashMap<Integer, Integer> roundTimesAndCounts = new HashMap<Integer, Integer>();
+
     private int roundCounts = 0;
     private double sumAliveHumanAge = 0;
     private double aliveHumanAvgAge = 0;
@@ -74,12 +77,12 @@ public class Audit {
         return auditType;
     }
 
-    public void run(int runs) {
-        for (int i = 0; i < runs; i++) {
+
+    public void creatScenarios(int scenarioNum) {
+        for (int i = 0; i < scenarioNum; i++) {
             ScenarioGenerator s = new ScenarioGenerator();
             scenarioList.add(s.generate());
         }
-        roundCounts = runs;
     }
 
     /**
@@ -157,7 +160,6 @@ public class Audit {
         int passengerLiveFlag, pedestrianLiveFlag;
         Persona[] passenger;
         Persona[] pedestrian;
-
         // passenger live implies pedestrians die, vice versa
         // add counter to count number of cases that passenger survive
         if (passengerLive) {
@@ -244,28 +246,6 @@ public class Audit {
                 if (j instanceof Human) {
                     humanList.add(pedestrianLiveFlag);
                     addHumanCategoryList(pedestrianLiveFlag, (Human) j);
-
-//                    if (((Human) j).getProfession().toString().equals("DOCTOR")) {
-//                        doctorList.add(pedestrianLiveFlag);
-//                    }
-//                    if (((Human) j).getProfession().toString().equals("CEO")) {
-//                        ceoList.add(pedestrianLiveFlag);
-//                    }
-//                    if (((Human) j).getProfession().toString().equals("CRIMINAL")) {
-//                        criminalList.add(pedestrianLiveFlag);
-//                    }
-//                    if (((Human) j).getProfession().toString().equals("HOMELESS")) {
-//                        homelessList.add(pedestrianLiveFlag);
-//                    }
-//                    if (((Human) j).getProfession().toString().equals("UNEMPLOYED")) {
-//                        unemployedList.add(pedestrianLiveFlag);
-//                    }
-//                    if (((Human) j).getProfession().toString().equals("TEACHER")) {
-//                        teacherList.add(pedestrianLiveFlag);
-//                    }
-//                    if (((Human) j).getProfession().toString().equals("CLEANER")) {
-//                        cleanerList.add(pedestrianLiveFlag);
-//                    }
                     if (((Human) j).isPregnant()) {
                         pregnantList.add(pedestrianLiveFlag);
                     }
@@ -538,9 +518,9 @@ public class Audit {
         youSurviveRate = youSurvive / youList.size();
     }
 
-
     // put key and value pairs into hashmap
     public void addIntoHashMap(HashMap<String, Double> map) {
+        calculateSurvivalRate();
         map.put("average age", aliveHumanAvgAge);
         map.put("you", youSurviveRate);
         map.put("passengers", passengerSurviveRates);
@@ -602,32 +582,116 @@ public class Audit {
                 //逆序（从大到小）排列，正序为“return o1.getValue()-o2.getValue”
             }
         });
-
         return list;
     }
 
 
-    public String toString() {
+    public void saveEachResult(ArrayList<String> resultList) {
+        // iterate through how many times the run() method have been run
+        String result = "";
+        double averageAge = 0;
         String title = "======================================\n" +
                 "# " + auditType + " Audit\n" +
                 "======================================\n" +
                 "- % SAVED AFTER " + roundCounts + " RUNS\n";
 
-        String result = "";
-        double averageAge=0;
         result += title;
 
         for (Map.Entry<String, Double> i : descHashMap(map)) {
             if (!i.getKey().equals("average age")) {
                 result += i.getKey() + ": " + String.format("%.2f", i.getValue()) + "\n";
-            }
-            else {
-                averageAge=i.getValue();
+            } else {
+                averageAge = i.getValue();
             }
         }
-        result+="--"+"\n";
-        result+="average age:"+averageAge;
+        result += "--" + "\n";
+        result += "average age:" + averageAge;
+        resultList.add(result);
+    }
+
+
+    public void run(int runs) {
+        roundCounts += runs;
+        // create scenarios
+        creatScenarios(runs);
+        saveEachResult(resultList);
+
+        youSurvive = 0;
+        passengerSurvive = 0;
+        pedestrianSurvive = 0;
+        greenSurvive = 0;
+        redSurvive = 0;
+        humanSurvive = 0;
+        animalSurvive = 0;
+        petSurvive = 0;
+        maleSurvive = 0;
+        femaleSurvive = 0;
+        avgBodySurvive = 0;
+        athleticBodySurvive = 0;
+        overweightBodySurvive = 0;
+        babySurvive = 0;
+        childSurvive = 0;
+        adultSurvive = 0;
+        seniorSurvive = 0;
+        doctorSurvive = 0;
+        ceoSurvive = 0;
+        criminalSurvive = 0;
+        homelessSurvive = 0;
+        unemployedSurvive = 0;
+        teacherSurvive = 0;
+        cleanerSurvive = 0;
+        pregnantSurvive = 0;
+        birdSurvive = 0;
+        dogSurvive = 0;
+        catSurvive = 0;
+        turtleSurvive = 0;
+        cowSurvive = 0;
+        pigSurvive = 0;
+        elephantSurvive = 0;
+        deerSurvive = 0;
+    }
+
+
+    public String toString() {
+        String result = "";
+        for (String i : resultList) {
+            result += i;
+            result += "\n";
+        }
         return result;
 
+//        for (Map.Entry<Integer, Integer> i : roundTimesAndCounts.entrySet()) {
+//                saveEachResult(resultList);
+//            }
+//
+//        for(String i:resultList){
+//            result+=i;
+//        }
+//        return result;
+
+
+//        String title = "======================================\n" +
+//                "# " + auditType + " Audit\n" +
+//                "======================================\n" +
+//                "- % SAVED AFTER " + roundCounts + " RUNS\n";
+//
+//        String result = "";
+//        result += title;
+//
+//        if (roundCounts == 0) {
+//            return "no audit available";
+//        } else {
+//            for (Map.Entry<String, Double> i : descHashMap(map)) {
+//                if (!i.getKey().equals("average age")) {
+//                    result += i.getKey() + ": " + String.format("%.2f", i.getValue()) + "\n";
+//                } else {
+//                    averageAge = i.getValue();
+//                }
+//            }
+//            result += "--" + "\n";
+//            result += "average age:" + averageAge;
+//            return result;
+//        }
+//[[1,2],[2,6],[3,9],[4,10]]
     }
 }

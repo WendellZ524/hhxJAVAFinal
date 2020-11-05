@@ -93,9 +93,7 @@ public class EthicalEngine {
             }
 
         }
-        // 打印了两个群体的存活率
-//        System.out.println("passenger:" + passengerWeight);
-//        System.out.println("peds:" + pedestrianWeight);
+
         if (passengerWeight > pedestrianWeight) {
             return Decision.PASSENGERS;
         } else {
@@ -107,9 +105,14 @@ public class EthicalEngine {
     public static void main(String[] args) {
 
         Audit a=new Audit();
-        a.run(5);
         a.setAuditType("黄海翔的test");
-        a.calculateSurvivalRate();
+        a.run(4);
+        a.run(2);
+        a.run(3);
+
+
+
+
         System.out.println(a);
 
 
