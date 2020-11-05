@@ -1,4 +1,5 @@
 import ethicalengine.*;
+
 import java.util.*;
 
 
@@ -6,13 +7,10 @@ public class Audit {
     private String auditType = "Unspecified";
     private static ArrayList<Scenario> scenarioList = new ArrayList<Scenario>();
     // the hashmap is the aggregate storage of all values to be output
-    private static HashMap<String,Double> map =new HashMap<String ,Double>();
+    private static HashMap<String, Double> map = new HashMap<String, Double>();
     private int roundCounts = 0;
-    private int passengerSurviveCounts = 0;
-    private double sumAliveHumanAge=0;
-    private double aliveHumanAvgAge=0;
-
-
+    private double sumAliveHumanAge = 0;
+    private double aliveHumanAvgAge = 0;
 
     // set up lists for corresponding attributes
     private ArrayList<Integer> maleList = new ArrayList<>();
@@ -34,12 +32,13 @@ public class Audit {
     private ArrayList<Integer> adultList = new ArrayList<>();
     private ArrayList<Integer> seniorList = new ArrayList<>();
     // lists specifically for animal and related scenarios
+    private ArrayList<Integer> passengerAliveList = new ArrayList<>();
+    private ArrayList<Integer> pedestrianAliveList = new ArrayList<>();
     private ArrayList<Integer> animalList = new ArrayList<>();
     private ArrayList<Integer> humanList = new ArrayList<>();
     private ArrayList<Integer> petList = new ArrayList<>();
     private ArrayList<Integer> greenList = new ArrayList<>();
     private ArrayList<Integer> redList = new ArrayList<>();
-    //    ArrayList<Integer> passengerNumList = new ArrayList<>();
     private ArrayList<Integer> birdList = new ArrayList<>();
     private ArrayList<Integer> dogList = new ArrayList<>();
     private ArrayList<Integer> catList = new ArrayList<>();
@@ -48,13 +47,14 @@ public class Audit {
     private ArrayList<Integer> pigList = new ArrayList<>();
     private ArrayList<Integer> deerList = new ArrayList<>();
     private ArrayList<Integer> elephantList = new ArrayList<>();
+    private ArrayList<Integer> youList = new ArrayList<>();
 
-    private double greenSurvive, redSurvive,humanSurvive, animalSurvive, petSurvive, maleSurvive, femaleSurvive, avgBodySurvive, athleticBodySurvive, overweightBodySurvive,
+    private double youSurvive, passengerSurvive, pedestrianSurvive, greenSurvive, redSurvive, humanSurvive, animalSurvive, petSurvive, maleSurvive, femaleSurvive, avgBodySurvive, athleticBodySurvive, overweightBodySurvive,
             babySurvive, childSurvive, adultSurvive, seniorSurvive, doctorSurvive, ceoSurvive,
             criminalSurvive, homelessSurvive, unemployedSurvive, teacherSurvive, cleanerSurvive, pregnantSurvive,
             birdSurvive, dogSurvive, catSurvive, turtleSurvive, cowSurvive, pigSurvive, elephantSurvive, deerSurvive;
 
-    private double passengerSurviveRates, pedestrianSurviveRate, greenSurviveRate,redSurviveRate,
+    private double youSurviveRate, passengerSurviveRates, pedestrianSurviveRate, greenSurviveRate, redSurviveRate,
             humanSurviveRate, animalSurviveRate, petSurviveRate, maleSurviveRate, femaleSurviveRate, avgBodySurviveRate, athleticSurviveRate,
             overweightBodySurviveRate, babySurviveRate, childSurviveRate, adultSurviveRate, seniorSurviveRate,
             doctorSurviveRate, ceoSurviveRate, criminalSurviveRate, homelessSurviveRate, unemployedSurviveRate,
@@ -114,6 +114,9 @@ public class Audit {
         } else if (human.getProfession().toString().equals("CLEANER")) {
             cleanerList.add(liveFlag);
         }
+        if (human.isYou()) {
+            youList.add(liveFlag);
+        }
     }
 
     /**
@@ -158,10 +161,13 @@ public class Audit {
         // passenger live implies pedestrians die, vice versa
         // add counter to count number of cases that passenger survive
         if (passengerLive) {
-            passengerSurviveCounts += 1;
+            passengerAliveList.add(1);
+            pedestrianAliveList.add(0);
             passengerLiveFlag = 1;
             pedestrianLiveFlag = 0;
         } else {
+            passengerAliveList.add(0);
+            pedestrianAliveList.add(1);
             passengerLiveFlag = 0;
             pedestrianLiveFlag = 1;
         }
@@ -201,8 +207,8 @@ public class Audit {
                         pregnantList.add(passengerLiveFlag);
                     }
                     // calculate alive average people age
-                    if(passengerLive){
-                        sumAliveHumanAge+=j.getAge();
+                    if (passengerLive) {
+                        sumAliveHumanAge += j.getAge();
                     }
 
                 }
@@ -264,8 +270,8 @@ public class Audit {
                         pregnantList.add(pedestrianLiveFlag);
                     }
                     // calculate alive average people age
-                    if(! passengerLive){
-                        sumAliveHumanAge+=j.getAge();
+                    if (!passengerLive) {
+                        sumAliveHumanAge += j.getAge();
                     }
 
                 }
@@ -296,9 +302,20 @@ public class Audit {
                 Live(false);
             }
         }
-        passengerSurviveRates = passengerSurviveCounts / (double) roundCounts;
-        pedestrianSurviveRate = (double) (roundCounts - passengerSurviveCounts) / roundCounts;
 
+        for (Integer i : passengerAliveList) {
+            if (i == 1) {
+                passengerSurvive += 1;
+            }
+        }
+        passengerSurviveRates = passengerSurvive / passengerAliveList.size();
+
+        for (Integer i : pedestrianAliveList) {
+            if (i == 1) {
+                pedestrianSurvive += 1;
+            }
+        }
+        pedestrianSurviveRate = pedestrianSurvive / pedestrianAliveList.size();
 
         for (Integer i : greenList) {
             if (i == 1) {
@@ -321,7 +338,7 @@ public class Audit {
         }
         humanSurviveRate = humanSurvive / humanList.size();
         // calculate average age for alive human
-        aliveHumanAvgAge= sumAliveHumanAge / humanSurvive;
+        aliveHumanAvgAge = sumAliveHumanAge / humanSurvive;
 
 
         for (Integer i : animalList) {
@@ -512,38 +529,82 @@ public class Audit {
             }
         }
         elephantSurviveRate = elephantSurvive / elephantList.size();
+
+        for (Integer i : youList) {
+            if (i == 1) {
+                youSurvive += 1;
+            }
+        }
+        youSurviveRate = youSurvive / youList.size();
     }
 
 
     // put key and value pairs into hashmap
-    public void addIntoHashMap(HashMap<String,Double> map){
-        map.put("passengers",passengerSurviveRates);
-        map.put("pedestrians",pedestrianSurviveRate);
-        map.put("animal",animalSurviveRate);
-        map.put("human",humanSurviveRate);
-        map.put("pet",petSurviveRate);
-        map.put("overweight",overweightBodySurviveRate);
-        map.put("average",avgBodySurviveRate);
-        map.put("athletic",athleticSurviveRate);
-        map.put("male",maleSurviveRate);
-        map.put("female",femaleSurviveRate);
-        map.put("pregnant",pregnantSurviveRate);
+    public void addIntoHashMap(HashMap<String, Double> map) {
+        map.put("average age", aliveHumanAvgAge);
+        map.put("you", youSurviveRate);
+        map.put("passengers", passengerSurviveRates);
+        map.put("pedestrians", pedestrianSurviveRate);
+        map.put("animal", animalSurviveRate);
+        map.put("human", humanSurviveRate);
+        map.put("pet", petSurviveRate);
+        map.put("overweight", overweightBodySurviveRate);
+        map.put("average", avgBodySurviveRate);
+        map.put("athletic", athleticSurviveRate);
+        map.put("male", maleSurviveRate);
+        map.put("female", femaleSurviveRate);
+        map.put("pregnant", pregnantSurviveRate);
         map.put("green", greenSurviveRate);
         map.put("red", redSurviveRate);
 
-        map.put("doctor",doctorSurviveRate);
-        map.put("ceo",ceoSurviveRate);
-        map.put("criminal",criminalSurviveRate);
-        map.put("homeless",homelessSurviveRate);
-        map.put("teacher",teacherSurviveRate);
-        map.put("cleaner",cleanerSurviveRate);
-        map.put("unemployed",unemployedSurviveRate);
+        map.put("doctor", doctorSurviveRate);
+        map.put("ceo", ceoSurviveRate);
+        map.put("criminal", criminalSurviveRate);
+        map.put("homeless", homelessSurviveRate);
+        map.put("teacher", teacherSurviveRate);
+        map.put("cleaner", cleanerSurviveRate);
+        map.put("unemployed", unemployedSurviveRate);
+        map.put("baby", babySurviveRate);
+        map.put("child", childSurviveRate);
+        map.put("adult", adultSurviveRate);
+        map.put("senior", seniorSurviveRate);
 
-
-
+        map.put("bird", birdSurviveRate);
+        map.put("dog", dogSurviveRate);
+        map.put("cat", catSurviveRate);
+        map.put("turtle", turtleSurviveRate);
+        map.put("cow", cowSurviveRate);
+        map.put("pig", pigSurviveRate);
+        map.put("deer", deerSurviveRate);
+        map.put("elephant", elephantSurviveRate);
     }
 
+    public List<Map.Entry<String, Double>> descHashMap(HashMap<String, Double> map) {
+        // add all pairs of key-value
+        addIntoHashMap(map);
 
+        //transform map.entrySet() to list
+        List<Map.Entry<String, Double>> list = new ArrayList<>();
+
+        for (Map.Entry<String, Double> entry : map.entrySet()) {
+            // if the entry IS a double
+            if (!entry.getValue().isNaN()) {
+                list.add(entry);
+            }
+        }
+
+        list.sort(new Comparator<Map.Entry<String, Double>>() {
+            @Override
+            public int compare(Map.Entry<String, Double> o1, Map.Entry<String, Double> o2) {
+                // compare() requires an int to return
+                // to avoid downcast issue, multiply each double by 1000
+                return (int) (o2.getValue() * 1000 - o1.getValue() * 1000);
+                //逆序（从大到小）排列，正序为“return o1.getValue()-o2.getValue”
+            }
+        });
+
+        return list;
+    }
 
 
     public String toString() {
@@ -553,20 +614,20 @@ public class Audit {
                 "- % SAVED AFTER " + roundCounts + " RUNS\n";
 
         String result = "";
+        double averageAge=0;
         result += title;
-        if (!scenarioList.isEmpty()) {
-            for (Scenario i : scenarioList) {
-                result += i;
+
+        for (Map.Entry<String, Double> i : descHashMap(map)) {
+            if (!i.getKey().equals("average age")) {
+                result += i.getKey() + ": " + String.format("%.2f", i.getValue()) + "\n";
             }
-        } else {
-            result = "no audit available";
+            else {
+                averageAge=i.getValue();
+            }
         }
-        return result + " male survival: " + maleSurviveRate + " femalsurvival: " + femaleSurviveRate +
-                " baby " + babySurviveRate + " child " + childSurviveRate + " adult total " + adultList.size() +
-                " adult survive: " + adultSurvive + " adult survive rate:" + adultSurviveRate + " senior " + seniorSurviveRate
-                + "\n" + "DOCTOR " + doctorList.size() + "\n" + "human " + humanSurviveRate
-                + "\n" + "animal " + animalSurviveRate + "\n" + "passenger " + passengerSurviveRates
-                + "\n" + "pedes " + pedestrianSurviveRate + "\n" + "legal? " + greenSurviveRate +
-                " alivehuman "+humanSurvive +"avg age "+aliveHumanAvgAge;
+        result+="--"+"\n";
+        result+="average age:"+averageAge;
+        return result;
+
     }
 }

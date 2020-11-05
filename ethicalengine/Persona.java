@@ -7,6 +7,12 @@ public abstract class Persona {
     private BodyType bodyType;
 
     public int getAge() {
+        if(age>100){
+            age=100;
+        }
+        else if(age<=0){
+            age=1;
+        }
         return age;
     }
 
