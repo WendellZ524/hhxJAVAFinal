@@ -1,8 +1,10 @@
+import com.sun.xml.internal.ws.wsdl.writer.document.soap.Body;
 import ethicalengine.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.lang.NumberFormatException;
 
 
 /**
@@ -11,10 +13,16 @@ import java.io.FileNotFoundException;
  * @author: HAIXIANG HUANG
  */
 public class EthicalEngine {
+    static class InvalidDataFormatException extends Exception{
+        public InvalidDataFormatException(){
+            super("WARNING: invalid characteristic in config file in" +
+                    "line < linecount >");
+        }
+    }
+
+    private static ArrayList<String[]> importedCSVData = new ArrayList<String[]>();
 
     public enum Decision {PASSENGERS, PEDESTRIANS}
-
-    ;
 
     /**
      * Decides whether to save the passengers or the pedestrians
@@ -86,12 +94,12 @@ public class EthicalEngine {
                 }
             }
             // animal on the road
-            else if(i instanceof Animal){
+            else if (i instanceof Animal) {
                 if (((Animal) i).isPet()) {
                     pedestrianWeight += 0.05;
                 }
-                if (((Animal) i).getSpecies().equals("bird")){
-                    pedestrianWeight -=0.05;
+                if (((Animal) i).getSpecies().equals("bird")) {
+                    pedestrianWeight -= 0.05;
                 }
             }
 
@@ -104,35 +112,165 @@ public class EthicalEngine {
         }
     }
 
-    public static void importConfig(String filepath){
+    public static void importConfig(String filepath) {
         File file = new File(filepath);
         try {
             if (!file.exists()) {
                 throw new FileNotFoundException("ERROR: could not find config file.");
-            }
-            else {
-                System.out.println("wenjianzaide");
+            } else {
+                // read data from CSV
+                BufferedReader reader = new BufferedReader(new FileReader(filepath));
+                // the first row is information (class,gender...)
+                reader.readLine();
+
+                String line = null;
+
+                //add all CSV data to the line (one line at a time)
+                while ((line = reader.readLine()) != null) {
+                    String[] item = line.split(",");//CSV格式文件为逗号分隔符文件，这里根据逗号切分
+                    importedCSVData.add(item);
+                    String last = item[item.length - 1];//这就是你要的数据了
+                    //int value = Integer.parseInt(last);//如果是数值，可以转化为数值
+                }
+                String[] endMarkArray = new String[1];
+                endMarkArray[0] = "End Mark";
+                importedCSVData.add(endMarkArray);
+
+//                //format the imported data
+//                String[] eachPersonaInstance=new String[11];
+//                for(String[] i:importedCSVData){
+//                    for(String j:i){
+//                        if(j.startsWith("scenario")){
+//
+//                        }
+//                        System.out.println(j);
+//                    }
+//                }
+
+
             }
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
 
+    public ArrayList<Scenario> createCSVScenario() {
+
+        ArrayList<Scenario> ScenarioList = new ArrayList<Scenario>();
+        ArrayList<Persona> passenger = new ArrayList<Persona>();
+        ArrayList<Persona> pedestrian = new ArrayList<Persona>();
+
+        try {
+            int ScenarioID = -1;
+            for (String[] line : importedCSVData) {  // For each line in CSV
+                if (line.length != 10 && !line[0].startsWith("scenario") && !line[0].equals("End Mark")) {
+                    throw new InvalidDataFormatException();
+                }
+
+                if (line[0].startsWith("scenario") || line[0].equals("End Mark")) {
+                    if (ScenarioID == -1) {
+                        ScenarioList.add(new Scenario());
+                        ScenarioID++;
+                        ScenarioList.get(ScenarioID).setLegalCrossing(line[0].substring(9).equals("green"));
+//                    if(!line[0].equals("End Mark")){
+//                        System.out.println(line[0].substring(9));}
+                    } else {
+
+//                    if(!line[0].equals("End Mark")){
+//                        System.out.println(line[0].substring(9));}
+                        Persona[] passengerArr = new Persona[passenger.size()];
+                        Persona[] pedestrianArr = new Persona[pedestrian.size()];
+
+                        for (int i = 0; i < passengerArr.length; i++) {
+                            passengerArr[i] = passenger.get(i);
+                        }
+
+                        for (int i = 0; i < pedestrianArr.length; i++) {
+                            pedestrianArr[i] = pedestrian.get(i);
+                        }
+                        ScenarioList.get(ScenarioID).setPassengers(passengerArr);
+
+                        ScenarioList.get(ScenarioID).setPedestrians(pedestrianArr);
+                        passenger.clear();
+                        pedestrian.clear();
+
+                        if (!line[0].equals("End Mark")) {
+                            ScenarioList.add(new Scenario());
+                            ScenarioID++;
+                            ScenarioList.get(ScenarioID).setLegalCrossing(line[0].substring(9).equals("green"));
+                        }
+
+                    }
+
+                } else {
+                    if (line[0].equals("human")) { // create an human instance
+                        Persona.Gender gender = Persona.Gender.valueOf(line[1].toUpperCase());
+                        int age = Integer.parseInt(line[2]);
+
+                        Persona.BodyType bodyType = Persona.BodyType.UNSPECIFIED;
+                        if (!line[3].equals("")) {
+                            bodyType = Persona.BodyType.valueOf(line[3].toUpperCase());
+                        }
+
+                        Persona.Profession profession = Persona.Profession.NONE;
+                        if (!line[4].equals("")) {
+                            profession = Persona.Profession.valueOf(line[4].toUpperCase());
+                        }
+                        boolean isPregnant = line[5].equals("TRUE");
+                        Human human = new Human(age, profession, gender, bodyType, isPregnant);
+                        human.setAsYou(line[6].equals("TRUE"));
+                        if (line[9].equals("passenger")) {
+                            passenger.add(human);
+                        } else if (line[9].equals("pedestrian")) {
+                            pedestrian.add(human);
+                        }
+
+                    } else if (line[0].equals("animal")) {
+                        Persona.Gender gender = Persona.Gender.valueOf(line[1].toUpperCase());
+                        int age = Integer.parseInt(line[2]);
+
+                        Persona.BodyType bodyType = Persona.BodyType.UNSPECIFIED;
+                        if (!line[3].equals("")) {
+                            bodyType = Persona.BodyType.valueOf(line[3].toUpperCase());
+                        }
+
+                        Animal animal = new Animal(line[7]);
+                        animal.setPet(line[8].equals("TRUE"));
+                        animal.setAge(age);
+                        animal.setGender(gender);
+                        animal.setBodyType(bodyType);
+                        if (line[9].equals("passenger")) {
+                            passenger.add(animal);
+                        } else if (line[9].equals("pedestrian")) {
+                            pedestrian.add(animal);
+                        }
+                    }
+
+                }
+
+            }
+        } catch (InvalidDataFormatException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return ScenarioList;
     }
 
 
     public static void main(String[] args) {
-        importConfig();
-
-
-//        Audit a=new Audit();
-//        a.setAuditType("黄海翔的test");
-//        a.run(2);
-//        a.printStatistic();
-//        a.printToFile(".vscode/hhxdetest");
-
-
+        importConfig("C:\\Users\\ae952\\Desktop\\Github Java\\hhxJAVAFinal\\tests\\config.csv");
+        EthicalEngine e1 = new EthicalEngine();
+        for (Scenario i : e1.createCSVScenario()) {
+            System.out.println(i);
+        }
 
 
     }
 }
+
+
+
+

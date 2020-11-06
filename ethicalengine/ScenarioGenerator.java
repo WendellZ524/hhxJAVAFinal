@@ -1,7 +1,6 @@
 package ethicalengine;
 
 import java.util.*;
-import java.util.concurrent.atomic.DoubleAccumulator;
 
 public class ScenarioGenerator {
     private long seed=0;
@@ -108,8 +107,8 @@ public class ScenarioGenerator {
      * @param professionNum the random number (index) for setting the profession
      * @return a human instance
      */
-    public Human createRandomAHuman(int ageNum, int genderNum, boolean pregnantBoolean, int bodyNum,
-                                    int professionNum){
+    public Human createRandomHuman(int ageNum, int genderNum, boolean pregnantBoolean, int bodyNum,
+                                   int professionNum){
         Human human = new Human();
         human.setAge(ageNum);
         human.setPregnant(pregnantBoolean);
@@ -134,7 +133,7 @@ public class ScenarioGenerator {
             boolean pregnantBoolean = random.nextBoolean();
             int bodyNum = random.nextInt(Persona.BodyType.values().length);
             int professionNum = random.nextInt(Persona.Profession.values().length);
-            return createRandomAHuman(ageNum,genderNum,pregnantBoolean,bodyNum,professionNum);
+            return createRandomHuman(ageNum,genderNum,pregnantBoolean,bodyNum,professionNum);
         }
         else {
             Random randomWithSeed=new Random(seed);
@@ -143,7 +142,7 @@ public class ScenarioGenerator {
             boolean pregnantBoolean = randomWithSeed.nextBoolean();
             int bodyNum = randomWithSeed.nextInt(Persona.BodyType.values().length);
             int professionNum = randomWithSeed.nextInt(Persona.Profession.values().length);
-            return createRandomAHuman(ageNum,genderNum,pregnantBoolean,bodyNum,professionNum);
+            return createRandomHuman(ageNum,genderNum,pregnantBoolean,bodyNum,professionNum);
         }
 
 

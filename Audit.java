@@ -695,10 +695,10 @@ public class Audit {
                 if (!file.exists()) {
                     file.createNewFile();
                 }
-                FileWriter fileWritter = new FileWriter(filepath, true);
-                fileWritter.write(result);
-                fileWritter.flush();
-                fileWritter.close();
+                FileWriter fileWriter = new FileWriter(filepath, true);
+                fileWriter.write(result);
+                fileWriter.flush();
+                fileWriter.close();
             }
         } catch (IOException | DirectoryNotFound e) {
             System.out.println(e.getMessage());

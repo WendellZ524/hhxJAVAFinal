@@ -8,6 +8,15 @@ package ethicalengine;
  */
 public class Scenario {
     private boolean legalCrossing;
+
+    public void setPassengers(Persona[] passengers) {
+        this.passengers = passengers;
+    }
+
+    public void setPedestrians(Persona[] pedestrians) {
+        this.pedestrians = pedestrians;
+    }
+
     private Persona[] passengers;
     private Persona[] pedestrians;
     private boolean inLane=false;
