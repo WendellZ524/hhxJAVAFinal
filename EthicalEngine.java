@@ -3,8 +3,6 @@ import ethicalengine.*;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
-import java.lang.NumberFormatException;
 
 
 /**
@@ -176,17 +174,16 @@ public class EthicalEngine {
         int ScenarioID = -1;
 
         for (String[] line : importedCSVData) {  // For each line in CSV
-
             try {
-                if (line.length != 10 && !line[0].startsWith("scenario")) {
-//    && !line[0].equals("End Mark"
+                // if in rows that not have 10 values (except for scenario and End Mark)
+                // throw an Exception and continue
+                if (line.length != 10 && !line[0].startsWith("scenario") && !line[0].equals("End Mark")) {
                     throw new InvalidDataFormatException("WARNING: invalid characteristic in config file in" +
                             "line < " + getLineNumber() + " >");
                 }
             } catch (InvalidDataFormatException e) {
                 System.out.println(e.getMessage());
             }
-
 
             if (line[0].startsWith("scenario") || line[0].equals("End Mark")) {
                 if (ScenarioID == -1) {
@@ -262,14 +259,8 @@ public class EthicalEngine {
                         pedestrian.add(animal);
                     }
                 }
-
             }
-
         }
-
-//        catch (InvalidDataFormatException e) {
-//            System.out.println(e.getMessage());
-//        }
         return ScenarioList;
     }
 
@@ -280,8 +271,6 @@ public class EthicalEngine {
         for (Scenario i : e1.createCSVScenario()) {
             System.out.println(i);
         }
-
-
     }
 }
 
