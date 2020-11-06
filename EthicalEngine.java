@@ -13,11 +13,21 @@ import java.lang.NumberFormatException;
  * @author: HAIXIANG HUANG
  */
 public class EthicalEngine {
-    static class InvalidDataFormatException extends Exception{
-        public InvalidDataFormatException(){
-            super("WARNING: invalid characteristic in config file in" +
-                    "line < linecount >");
+    static class InvalidDataFormatException extends Exception {
+        public InvalidDataFormatException() {
+            super();
         }
+
+        public InvalidDataFormatException(String s) {
+            super(s);
+        }
+    }
+
+    public static int getLineNumber() {
+        int i = 1;
+        StackTraceElement[] stacks = new Throwable().getStackTrace();
+        int lineNumber = stacks[i].getLineNumber();
+        return lineNumber;
     }
 
     private static ArrayList<String[]> importedCSVData = new ArrayList<String[]>();
@@ -163,99 +173,103 @@ public class EthicalEngine {
         ArrayList<Persona> passenger = new ArrayList<Persona>();
         ArrayList<Persona> pedestrian = new ArrayList<Persona>();
 
-        try {
-            int ScenarioID = -1;
-            for (String[] line : importedCSVData) {  // For each line in CSV
-                if (line.length != 10 && !line[0].startsWith("scenario") && !line[0].equals("End Mark")) {
-                    throw new InvalidDataFormatException();
-                }
+        int ScenarioID = -1;
 
-                if (line[0].startsWith("scenario") || line[0].equals("End Mark")) {
-                    if (ScenarioID == -1) {
+        for (String[] line : importedCSVData) {  // For each line in CSV
+
+            try {
+                if (line.length != 10 && !line[0].startsWith("scenario")) {
+//    && !line[0].equals("End Mark"
+                    throw new InvalidDataFormatException("WARNING: invalid characteristic in config file in" +
+                            "line < " + getLineNumber() + " >");
+                }
+            } catch (InvalidDataFormatException e) {
+                System.out.println(e.getMessage());
+            }
+
+
+            if (line[0].startsWith("scenario") || line[0].equals("End Mark")) {
+                if (ScenarioID == -1) {
+                    ScenarioList.add(new Scenario());
+                    ScenarioID++;
+                    ScenarioList.get(ScenarioID).setLegalCrossing(line[0].substring(9).equals("green"));
+
+                } else {
+                    Persona[] passengerArr = new Persona[passenger.size()];
+                    Persona[] pedestrianArr = new Persona[pedestrian.size()];
+
+                    for (int i = 0; i < passengerArr.length; i++) {
+                        passengerArr[i] = passenger.get(i);
+                    }
+
+                    for (int i = 0; i < pedestrianArr.length; i++) {
+                        pedestrianArr[i] = pedestrian.get(i);
+                    }
+                    ScenarioList.get(ScenarioID).setPassengers(passengerArr);
+
+                    ScenarioList.get(ScenarioID).setPedestrians(pedestrianArr);
+                    passenger.clear();
+                    pedestrian.clear();
+
+                    if (!line[0].equals("End Mark")) {
                         ScenarioList.add(new Scenario());
                         ScenarioID++;
                         ScenarioList.get(ScenarioID).setLegalCrossing(line[0].substring(9).equals("green"));
-//                    if(!line[0].equals("End Mark")){
-//                        System.out.println(line[0].substring(9));}
-                    } else {
-
-//                    if(!line[0].equals("End Mark")){
-//                        System.out.println(line[0].substring(9));}
-                        Persona[] passengerArr = new Persona[passenger.size()];
-                        Persona[] pedestrianArr = new Persona[pedestrian.size()];
-
-                        for (int i = 0; i < passengerArr.length; i++) {
-                            passengerArr[i] = passenger.get(i);
-                        }
-
-                        for (int i = 0; i < pedestrianArr.length; i++) {
-                            pedestrianArr[i] = pedestrian.get(i);
-                        }
-                        ScenarioList.get(ScenarioID).setPassengers(passengerArr);
-
-                        ScenarioList.get(ScenarioID).setPedestrians(pedestrianArr);
-                        passenger.clear();
-                        pedestrian.clear();
-
-                        if (!line[0].equals("End Mark")) {
-                            ScenarioList.add(new Scenario());
-                            ScenarioID++;
-                            ScenarioList.get(ScenarioID).setLegalCrossing(line[0].substring(9).equals("green"));
-                        }
-
-                    }
-
-                } else {
-                    if (line[0].equals("human")) { // create an human instance
-                        Persona.Gender gender = Persona.Gender.valueOf(line[1].toUpperCase());
-                        int age = Integer.parseInt(line[2]);
-
-                        Persona.BodyType bodyType = Persona.BodyType.UNSPECIFIED;
-                        if (!line[3].equals("")) {
-                            bodyType = Persona.BodyType.valueOf(line[3].toUpperCase());
-                        }
-
-                        Persona.Profession profession = Persona.Profession.NONE;
-                        if (!line[4].equals("")) {
-                            profession = Persona.Profession.valueOf(line[4].toUpperCase());
-                        }
-                        boolean isPregnant = line[5].equals("TRUE");
-                        Human human = new Human(age, profession, gender, bodyType, isPregnant);
-                        human.setAsYou(line[6].equals("TRUE"));
-                        if (line[9].equals("passenger")) {
-                            passenger.add(human);
-                        } else if (line[9].equals("pedestrian")) {
-                            pedestrian.add(human);
-                        }
-
-                    } else if (line[0].equals("animal")) {
-                        Persona.Gender gender = Persona.Gender.valueOf(line[1].toUpperCase());
-                        int age = Integer.parseInt(line[2]);
-
-                        Persona.BodyType bodyType = Persona.BodyType.UNSPECIFIED;
-                        if (!line[3].equals("")) {
-                            bodyType = Persona.BodyType.valueOf(line[3].toUpperCase());
-                        }
-
-                        Animal animal = new Animal(line[7]);
-                        animal.setPet(line[8].equals("TRUE"));
-                        animal.setAge(age);
-                        animal.setGender(gender);
-                        animal.setBodyType(bodyType);
-                        if (line[9].equals("passenger")) {
-                            passenger.add(animal);
-                        } else if (line[9].equals("pedestrian")) {
-                            pedestrian.add(animal);
-                        }
                     }
 
                 }
 
+            } else {
+                if (line[0].equals("human")) { // create an human instance
+                    Persona.Gender gender = Persona.Gender.valueOf(line[1].toUpperCase());
+                    int age = Integer.parseInt(line[2]);
+
+                    Persona.BodyType bodyType = Persona.BodyType.UNSPECIFIED;
+                    if (!line[3].equals("")) {
+                        bodyType = Persona.BodyType.valueOf(line[3].toUpperCase());
+                    }
+
+                    Persona.Profession profession = Persona.Profession.NONE;
+                    if (!line[4].equals("")) {
+                        profession = Persona.Profession.valueOf(line[4].toUpperCase());
+                    }
+                    boolean isPregnant = line[5].equals("TRUE");
+                    Human human = new Human(age, profession, gender, bodyType, isPregnant);
+                    human.setAsYou(line[6].equals("TRUE"));
+                    if (line[9].equals("passenger")) {
+                        passenger.add(human);
+                    } else if (line[9].equals("pedestrian")) {
+                        pedestrian.add(human);
+                    }
+
+                } else if (line[0].equals("animal")) {
+                    Persona.Gender gender = Persona.Gender.valueOf(line[1].toUpperCase());
+                    int age = Integer.parseInt(line[2]);
+
+                    Persona.BodyType bodyType = Persona.BodyType.UNSPECIFIED;
+                    if (!line[3].equals("")) {
+                        bodyType = Persona.BodyType.valueOf(line[3].toUpperCase());
+                    }
+
+                    Animal animal = new Animal(line[7]);
+                    animal.setPet(line[8].equals("TRUE"));
+                    animal.setAge(age);
+                    animal.setGender(gender);
+                    animal.setBodyType(bodyType);
+                    if (line[9].equals("passenger")) {
+                        passenger.add(animal);
+                    } else if (line[9].equals("pedestrian")) {
+                        pedestrian.add(animal);
+                    }
+                }
+
             }
-        } catch (InvalidDataFormatException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+
         }
+
+//        catch (InvalidDataFormatException e) {
+//            System.out.println(e.getMessage());
+//        }
         return ScenarioList;
     }
 
