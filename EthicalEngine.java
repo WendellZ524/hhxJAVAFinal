@@ -1,5 +1,8 @@
 import ethicalengine.*;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+
 
 
 /**
@@ -101,19 +104,32 @@ public class EthicalEngine {
         }
     }
 
+    public static void importConfig(String filepath){
+        File file = new File(filepath);
+        try {
+            if (!file.exists()) {
+                throw new FileNotFoundException("ERROR: could not find config file.");
+            }
+            else {
+                System.out.println("wenjianzaide");
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+    }
+
 
     public static void main(String[] args) {
-
-        Audit a=new Audit();
-        a.setAuditType("黄海翔的test");
-        a.run(4);
-        a.run(2);
-        a.run(3);
+        importConfig();
 
 
-
-
-        System.out.println(a);
+//        Audit a=new Audit();
+//        a.setAuditType("黄海翔的test");
+//        a.run(2);
+//        a.printStatistic();
+//        a.printToFile(".vscode/hhxdetest");
 
 
 

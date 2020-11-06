@@ -1,15 +1,24 @@
 import ethicalengine.*;
 
 import java.util.*;
+import java.io.*;
 
 
 public class Audit {
+    static class DirectoryNotFound extends Exception {
+        public DirectoryNotFound() {
+            super("ERROR: could not print results. Target directory does not exist.");
+        }
+    }
+
     private String auditType = "Unspecified";
     private ArrayList<Scenario> scenarioList = new ArrayList<Scenario>();
     private ArrayList<String> resultList = new ArrayList<String>();
     // the hashmap is the aggregate storage of all values to be output
     private HashMap<String, Double> map = new HashMap<String, Double>();
     private HashMap<Integer, Integer> roundTimesAndCounts = new HashMap<Integer, Integer>();
+    private String result = "";
+
 
     private int roundCounts = 0;
     private double sumAliveHumanAge = 0;
@@ -605,7 +614,7 @@ public class Audit {
             }
         }
         result += "--" + "\n";
-        result += "average age:" + averageAge;
+        result += "average age:" + String.format("%.2f", averageAge);
         resultList.add(result);
     }
 
@@ -651,47 +660,53 @@ public class Audit {
         deerSurvive = 0;
     }
 
-
     public String toString() {
-        String result = "";
         for (String i : resultList) {
             result += i;
             result += "\n";
         }
         return result;
 
-//        for (Map.Entry<Integer, Integer> i : roundTimesAndCounts.entrySet()) {
-//                saveEachResult(resultList);
-//            }
-//
-//        for(String i:resultList){
-//            result+=i;
-//        }
-//        return result;
+    }
+
+    public void printStatistic() {
+        toString();
+        System.out.println(result);
+    }
+
+    /**
+     * To print the results from toString() to the given file
+     *
+     * @param filepath the relative file path (including directory eg: "tests/testfile.txt")
+     */
+    public void printToFile(String filepath) {
+        int indexOfEndDirectory = filepath.indexOf("/");
+        try {
+            if (indexOfEndDirectory == -1) {
+                throw new DirectoryNotFound();
+            } else {
+                String directory = filepath.substring(0, indexOfEndDirectory);
+//        String filename=filepath.substring(indexOfEndDirectory+1,filepath.length());
+                File dir = new File(directory);
+                if (!dir.isDirectory()) {
+                    throw new DirectoryNotFound();
+                }
+                File file = new File(filepath);
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+                FileWriter fileWritter = new FileWriter(filepath, true);
+                fileWritter.write(result);
+                fileWritter.flush();
+                fileWritter.close();
+            }
+        } catch (IOException | DirectoryNotFound e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            System.exit(0);
+        }
 
 
-//        String title = "======================================\n" +
-//                "# " + auditType + " Audit\n" +
-//                "======================================\n" +
-//                "- % SAVED AFTER " + roundCounts + " RUNS\n";
-//
-//        String result = "";
-//        result += title;
-//
-//        if (roundCounts == 0) {
-//            return "no audit available";
-//        } else {
-//            for (Map.Entry<String, Double> i : descHashMap(map)) {
-//                if (!i.getKey().equals("average age")) {
-//                    result += i.getKey() + ": " + String.format("%.2f", i.getValue()) + "\n";
-//                } else {
-//                    averageAge = i.getValue();
-//                }
-//            }
-//            result += "--" + "\n";
-//            result += "average age:" + averageAge;
-//            return result;
-//        }
-//[[1,2],[2,6],[3,9],[4,10]]
     }
 }
+
