@@ -389,7 +389,7 @@ public class EthicalEngine {
                                                 "line < " + getLineNumber() + " >");
                             }
                         }
-                        else { // if the gender cell is empty
+                        else {
                             throw new NumberFormatException(
                                     "WARNING: invalid number format in config file in" +
                                             "line < " + getLineNumber() + " >");
@@ -417,7 +417,7 @@ public class EthicalEngine {
 
 
     public static void main(String[] args) {
-        importConfig("C:\\Users\\ae952\\Desktop\\Github Java\\hhxJAVAFinal\\tests\\config_3.csv");
+        importConfig("C:\\Users\\ae952\\Desktop\\Github Java\\hhxJAVAFinal\\tests\\config.csv");
         EthicalEngine e1 = new EthicalEngine();
         for (Scenario i : e1.createCSVScenario()) {
             System.out.println(i);
