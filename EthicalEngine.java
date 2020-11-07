@@ -1,8 +1,11 @@
 import com.sun.xml.internal.ws.wsdl.writer.document.soap.Body;
+import com.sun.xml.internal.ws.wsdl.writer.document.soap.BodyType;
 import ethicalengine.*;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -120,6 +123,12 @@ public class EthicalEngine {
         }
     }
 
+
+    /**
+     * To import the data from CSV file to the arraylist importedCSVData
+     *
+     * @param filepath the path of file
+     */
     public static void importConfig(String filepath) {
         File file = new File(filepath);
         try {
@@ -185,6 +194,7 @@ public class EthicalEngine {
                 System.out.println(e.getMessage());
             }
 
+            //End mark is located in the last line
             if (line[0].startsWith("scenario") || line[0].equals("End Mark")) {
                 if (ScenarioID == -1) {
                     ScenarioList.add(new Scenario());
@@ -203,32 +213,51 @@ public class EthicalEngine {
                         pedestrianArr[i] = pedestrian.get(i);
                     }
                     ScenarioList.get(ScenarioID).setPassengers(passengerArr);
-
                     ScenarioList.get(ScenarioID).setPedestrians(pedestrianArr);
                     passenger.clear();
                     pedestrian.clear();
 
+                    //End mark is located in the last line
                     if (!line[0].equals("End Mark")) {
                         ScenarioList.add(new Scenario());
                         ScenarioID++;
                         ScenarioList.get(ScenarioID).setLegalCrossing(line[0].substring(9).equals("green"));
                     }
-
                 }
-
             } else {
-                if (line[0].equals("human")) { // create an human instance
+                // creat attributes lists for checking
+                List<Persona.BodyType> bodyTypeList = Arrays.asList(Persona.BodyType.values());
+                List<Persona.Gender> genderList = Arrays.asList(Persona.Gender.values());
+                List<Persona.Profession> professionList = Arrays.asList(Persona.Profession.values());
+
+
+
+                if (line[0].equals("human")) { // create a human instance
                     Persona.Gender gender = Persona.Gender.valueOf(line[1].toUpperCase());
                     int age = Integer.parseInt(line[2]);
 
                     Persona.BodyType bodyType = Persona.BodyType.UNSPECIFIED;
                     if (!line[3].equals("")) {
+                        if(bodyTypeList.contains(Persona.BodyType.valueOf(line[3].toUpperCase()))){
+                            System.out.println("包含了body");
+                        }
                         bodyType = Persona.BodyType.valueOf(line[3].toUpperCase());
                     }
 
                     Persona.Profession profession = Persona.Profession.NONE;
+//                    Persona.Profession profession = null;
+
+                    // check if the value is a string
                     if (!line[4].equals("")) {
+                        // check if the value is in the profession array
+//                        if(professionList.contains(Persona.Profession.valueOf(line[4].toUpperCase()))){
+//                            System.out.println("包含了profession");
+//                        }
+
                         profession = Persona.Profession.valueOf(line[4].toUpperCase());
+                    }
+                    else {
+                        // 丢出不是string的异常
                     }
                     boolean isPregnant = line[5].equals("TRUE");
                     Human human = new Human(age, profession, gender, bodyType, isPregnant);
@@ -239,7 +268,7 @@ public class EthicalEngine {
                         pedestrian.add(human);
                     }
 
-                } else if (line[0].equals("animal")) {
+                } else if (line[0].equals("animal")) { // create an animal instance
                     Persona.Gender gender = Persona.Gender.valueOf(line[1].toUpperCase());
                     int age = Integer.parseInt(line[2]);
 

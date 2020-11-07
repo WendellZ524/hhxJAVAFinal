@@ -117,7 +117,7 @@ public class Scenario {
 
     /**
      * Output the pedestrians details
-     * @return the formatted each peds detial (in String)
+     * @return the formatted each peds detail (in String)
      */
     public String outputPedestrians(){
         String temp="";

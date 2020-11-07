@@ -100,7 +100,7 @@ public class Human extends Persona {
         }
 
         if (this.isYou()) {
-            if (this.getProfession().toString().equals("NONE")) {
+            if (this.getProfession().toString().equals("NONE")) { // don't print profession if it's NONE
                 temp1= ("you " + getBodyType() + " " + getAgeCategory() + " "
                         + " " + outputPregnant);
                 return temp1.replaceAll("\\s+"," ");
@@ -113,7 +113,7 @@ public class Human extends Persona {
         }
         // you are not the passenger
         else {
-            if (this.getProfession().toString().equals("NONE")) {
+            if (this.getProfession().toString().equals("NONE")) { // don't print profession if it's NONE
                 temp3= getBodyType() + " " + getAgeCategory() + " "
                         + " " +getGender()+" "+ outputPregnant;
                 return temp3.replaceAll("\\s+"," ");
