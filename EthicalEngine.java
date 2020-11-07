@@ -1,3 +1,4 @@
+import com.sun.deploy.util.StringUtils;
 import com.sun.xml.internal.ws.wsdl.writer.document.soap.Body;
 import com.sun.xml.internal.ws.wsdl.writer.document.soap.BodyType;
 import ethicalengine.*;
@@ -20,6 +21,26 @@ public class EthicalEngine {
         }
 
         public InvalidDataFormatException(String s) {
+            super(s);
+        }
+    }
+
+    static class InvalidCharacteristicException extends Exception {
+        public InvalidCharacteristicException() {
+            super();
+        }
+
+        public InvalidCharacteristicException(String s) {
+            super(s);
+        }
+    }
+
+    static class NumberFormatException extends Exception {
+        public NumberFormatException() {
+            super();
+        }
+
+        public NumberFormatException(String s) {
             super(s);
         }
     }
@@ -187,7 +208,7 @@ public class EthicalEngine {
                 // if in rows that not have 10 values (except for scenario and End Mark)
                 // throw an Exception and continue
                 if (line.length != 10 && !line[0].startsWith("scenario") && !line[0].equals("End Mark")) {
-                    throw new InvalidDataFormatException("WARNING: invalid characteristic in config file in" +
+                    throw new InvalidDataFormatException("WARNING: invalid data format in config file in" +
                             "line < " + getLineNumber() + " >");
                 }
             } catch (InvalidDataFormatException e) {
@@ -225,41 +246,102 @@ public class EthicalEngine {
                     }
                 }
             } else {
-                // creat attributes lists for checking
-                List<Persona.BodyType> bodyTypeList = Arrays.asList(Persona.BodyType.values());
-                List<Persona.Gender> genderList = Arrays.asList(Persona.Gender.values());
-                List<Persona.Profession> professionList = Arrays.asList(Persona.Profession.values());
+                // add attributes to genderList for further judgement
+                ArrayList<String> genderList = new ArrayList<>();
+                for (Persona.Gender i : Persona.Gender.values()) {
+                    genderList.add(i.toString());
+                }
 
+                // add attributes to bodyList for further judgement
+                ArrayList<String> bodyList = new ArrayList<>();
+                for (Persona.BodyType i : Persona.BodyType.values()) {
+                    bodyList.add(i.toString());
+                }
+
+                // add attributes to professionLists for further judgement
+                ArrayList<String> professionList = new ArrayList<>();
+                for (Persona.Profession i : Persona.Profession.values()) {
+                    professionList.add(i.toString());
+                }
 
 
                 if (line[0].equals("human")) { // create a human instance
-                    Persona.Gender gender = Persona.Gender.valueOf(line[1].toUpperCase());
+
+                    // adding gender
+                    Persona.Gender gender = null;
+                    try {
+                        if (!line[1].equals("")) {
+                            if (genderList.contains(line[1].toUpperCase())) {
+                                gender = Persona.Gender.valueOf(line[1].toUpperCase());
+                            } else {
+                                throw new InvalidCharacteristicException(
+                                        "WARNING: invalid characteristic in config file in" +
+                                                "line < " + getLineNumber() + " >");
+                            }
+                        }
+                        else { // if the gender cell is empty
+                            throw new NumberFormatException(
+                                    "WARNING: invalid number format in config file in" +
+                                    "line < " + getLineNumber() + " >");
+                        }
+                    } catch (InvalidCharacteristicException | NumberFormatException e) {
+                        // reset to the default value
+                        System.out.println(e.getMessage());
+                        gender = Persona.Gender.UNKNOWN;
+                    }
+
+                    // adding age
                     int age = Integer.parseInt(line[2]);
 
-                    Persona.BodyType bodyType = Persona.BodyType.UNSPECIFIED;
-                    if (!line[3].equals("")) {
-                        if(bodyTypeList.contains(Persona.BodyType.valueOf(line[3].toUpperCase()))){
-                            System.out.println("包含了body");
+                    // adding bodyType
+                    Persona.BodyType bodyType = null;
+                    try {
+                        if (!line[3].equals("")) {
+                            if (bodyList.contains(line[3].toUpperCase())) {
+                                bodyType = Persona.BodyType.valueOf(line[3].toUpperCase());
+                            } else {
+                                throw new InvalidCharacteristicException(
+                                        "WARNING: invalid characteristic in config file in" +
+                                                "line < " + getLineNumber() + " >");
+                            }
                         }
-                        bodyType = Persona.BodyType.valueOf(line[3].toUpperCase());
+                        else { // if the gender cell is empty
+                            throw new NumberFormatException(
+                                    "WARNING: invalid number format in config file in" +
+                                            "line < " + getLineNumber() + " >");
+                        }
+                    } catch (InvalidCharacteristicException | NumberFormatException e) {
+                        bodyType = Persona.BodyType.UNSPECIFIED;
+                        System.out.println(e.getMessage());
                     }
 
-                    Persona.Profession profession = Persona.Profession.NONE;
-//                    Persona.Profession profession = null;
+                    // adding profession
+                    Persona.Profession profession = null;
+                    try {
+                        if (!line[4].equals("")) {
+                            // check if the value is in the profession array
+                            if (professionList.contains(line[4].toUpperCase())) {
+                                profession = Persona.Profession.valueOf(line[4].toUpperCase());
+                            } else {
+                                throw new InvalidCharacteristicException(
+                                        "WARNING: invalid characteristic in config file in" +
+                                                "line < " + getLineNumber() + " >");
+                            }
+                        }
+                        else { // if the gender cell is empty
+                            throw new NumberFormatException(
+                                    "WARNING: invalid number format in config file in" +
+                                            "line < " + getLineNumber() + " >");
+                        }
 
-                    // check if the value is a string
-                    if (!line[4].equals("")) {
-                        // check if the value is in the profession array
-//                        if(professionList.contains(Persona.Profession.valueOf(line[4].toUpperCase()))){
-//                            System.out.println("包含了profession");
-//                        }
+                    } catch (InvalidCharacteristicException | NumberFormatException e) {
+                        profession= Persona.Profession.NONE;
+                        System.out.println(e.getMessage());
+                    }
 
-                        profession = Persona.Profession.valueOf(line[4].toUpperCase());
-                    }
-                    else {
-                        // 丢出不是string的异常
-                    }
+
                     boolean isPregnant = line[5].equals("TRUE");
+                    // create human instance
                     Human human = new Human(age, profession, gender, bodyType, isPregnant);
                     human.setAsYou(line[6].equals("TRUE"));
                     if (line[9].equals("passenger")) {
@@ -269,12 +351,52 @@ public class EthicalEngine {
                     }
 
                 } else if (line[0].equals("animal")) { // create an animal instance
-                    Persona.Gender gender = Persona.Gender.valueOf(line[1].toUpperCase());
+
+                    // adding gender
+                    Persona.Gender gender = null;
+                    try {
+                        if (!line[1].equals("")) {
+                            if (genderList.contains(line[1].toUpperCase())) {
+                                gender = Persona.Gender.valueOf(line[1].toUpperCase());
+                            } else {
+                                throw new InvalidCharacteristicException(
+                                        "WARNING: invalid characteristic in config file in" +
+                                                "line < " + getLineNumber() + " >");
+                            }
+                        }
+                        else { // if the gender cell is empty
+                            throw new NumberFormatException(
+                                    "WARNING: invalid number format in config file in" +
+                                            "line < " + getLineNumber() + " >");
+                        }
+                    } catch (InvalidCharacteristicException | NumberFormatException e) {
+                        // reset to the default value
+                        System.out.println(e.getMessage());
+                        gender = Persona.Gender.UNKNOWN;
+                    }
+
                     int age = Integer.parseInt(line[2]);
 
-                    Persona.BodyType bodyType = Persona.BodyType.UNSPECIFIED;
-                    if (!line[3].equals("")) {
-                        bodyType = Persona.BodyType.valueOf(line[3].toUpperCase());
+                    // adding bodyType
+                    Persona.BodyType bodyType = null;
+                    try {
+                        if (!line[3].equals("")) {
+                            if (bodyList.contains(line[3].toUpperCase())) {
+                                bodyType = Persona.BodyType.valueOf(line[3].toUpperCase());
+                            } else {
+                                throw new InvalidCharacteristicException(
+                                        "WARNING: invalid characteristic in config file in" +
+                                                "line < " + getLineNumber() + " >");
+                            }
+                        }
+                        else { // if the gender cell is empty
+                            throw new NumberFormatException(
+                                    "WARNING: invalid number format in config file in" +
+                                            "line < " + getLineNumber() + " >");
+                        }
+                    } catch (InvalidCharacteristicException | NumberFormatException e) {
+                        bodyType = Persona.BodyType.UNSPECIFIED;
+                        System.out.println(e.getMessage());
                     }
 
                     Animal animal = new Animal(line[7]);
@@ -295,7 +417,7 @@ public class EthicalEngine {
 
 
     public static void main(String[] args) {
-        importConfig("C:\\Users\\ae952\\Desktop\\Github Java\\hhxJAVAFinal\\tests\\config.csv");
+        importConfig("C:\\Users\\ae952\\Desktop\\Github Java\\hhxJAVAFinal\\tests\\config_3.csv");
         EthicalEngine e1 = new EthicalEngine();
         for (Scenario i : e1.createCSVScenario()) {
             System.out.println(i);

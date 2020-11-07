@@ -88,7 +88,6 @@ public class Human extends Persona {
     }
 
 
-
     public String toString() {
         String temp1;
         String temp2;
@@ -101,28 +100,28 @@ public class Human extends Persona {
 
         if (this.isYou()) {
             if (this.getProfession().toString().equals("NONE")) { // don't print profession if it's NONE
-                temp1= ("you " + getBodyType() + " " + getAgeCategory() + " "
-                        + " " + outputPregnant);
-                return temp1.replaceAll("\\s+"," ");
+                temp1 = ("you " + getBodyType() + " " + getAgeCategory() + " "
+                        + " " + getGender() + " " + outputPregnant);
+                return temp1.replaceAll("\\s+", " ");
             } else {
-                temp2= ("you " + getBodyType() + " " + getAgeCategory() + " "
-                        + getProfession() + " " + outputPregnant);
-                return temp2.replaceAll("\\s+"," ");
+                temp2 = ("you " + getBodyType() + " " + getAgeCategory() + " "
+                        + getProfession() + " " + getGender() + " " + outputPregnant);
+                return temp2.replaceAll("\\s+", " ");
 
             }
         }
         // you are not the passenger
         else {
             if (this.getProfession().toString().equals("NONE")) { // don't print profession if it's NONE
-                temp3= getBodyType() + " " + getAgeCategory() + " "
-                        + " " +getGender()+" "+ outputPregnant;
-                return temp3.replaceAll("\\s+"," ");
+                temp3 = getBodyType() + " " + getAgeCategory() + " "
+                        + " " + getGender() + " " + outputPregnant;
+                return temp3.replaceAll("\\s+", " ");
 
             } else {
                 // 用replace方法把两个空格的情况换成一个空格
-                temp4= getBodyType() + " " + getAgeCategory() + " "
-                        + getProfession() + " " +getGender()+" "+outputPregnant;
-                return temp4.replaceAll("\\s+"," ");
+                temp4 = getBodyType() + " " + getAgeCategory() + " "
+                        + getProfession() + " " + getGender() + " " + outputPregnant;
+                return temp4.replaceAll("\\s+", " ");
             }
         }
     }
