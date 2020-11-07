@@ -340,17 +340,19 @@ public class EthicalEngine {
                     }
 
 
-                    boolean isPregnant = line[5].equals("TRUE");
+                    boolean isPregnant = line[5].toUpperCase().equals("TRUE");
                     // create human instance
                     Human human = new Human(age, profession, gender, bodyType, isPregnant);
-                    human.setAsYou(line[6].equals("TRUE"));
+
+                    human.setAsYou(line[6].toUpperCase().equals("TRUE"));
                     if (line[9].equals("passenger")) {
                         passenger.add(human);
                     } else if (line[9].equals("pedestrian")) {
                         pedestrian.add(human);
                     }
 
-                } else if (line[0].equals("animal")) { // create an animal instance
+                }
+                else if (line[0].equals("animal")) { // create an animal instance
 
                     // adding gender
                     Persona.Gender gender = null;
@@ -400,7 +402,12 @@ public class EthicalEngine {
                     }
 
                     Animal animal = new Animal(line[7]);
-                    animal.setPet(line[8].equals("TRUE"));
+//                    System.out.println("csv宠物"+line[8]);
+//                    System.out.println("是否设置为宠物"+line[8].equals("TRUE"));
+                    animal.setPet(line[8].toUpperCase().equals("TRUE"));
+
+
+//                    System.out.println("是宠物吗: "+animal.isPet());
                     animal.setAge(age);
                     animal.setGender(gender);
                     animal.setBodyType(bodyType);
@@ -417,7 +424,7 @@ public class EthicalEngine {
 
 
     public static void main(String[] args) {
-        importConfig("C:\\Users\\ae952\\Desktop\\Github Java\\hhxJAVAFinal\\tests\\config.csv");
+        importConfig("C:\\Users\\ae952\\Desktop\\Github Java\\hhxJAVAFinal\\tests\\config_3.csv");
         EthicalEngine e1 = new EthicalEngine();
         for (Scenario i : e1.createCSVScenario()) {
             System.out.println(i);

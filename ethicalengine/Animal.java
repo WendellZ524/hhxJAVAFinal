@@ -17,7 +17,7 @@ public class Animal extends Persona {
     }
 
     public void setPet(boolean isPet) {
-        this.isPet = isPet;
+        this.isPet=isPet;
     }
 
     public Animal(String species) {
