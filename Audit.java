@@ -12,7 +12,9 @@ public class Audit {
     }
 
     private String auditType = "Unspecified";
+
     private ArrayList<Scenario> scenarioList = new ArrayList<Scenario>();
+
     private ArrayList<String> resultList = new ArrayList<String>();
     // the hashmap is the aggregate storage of all values to be output
     private HashMap<String, Double> map = new HashMap<String, Double>();
@@ -76,6 +78,10 @@ public class Audit {
 
 
     public Audit() {
+    }
+    public Audit(Scenario[] scenarioArr){
+        List<Scenario> tempList= Arrays.asList(scenarioArr.clone());
+        this.scenarioList= new ArrayList<Scenario>(tempList);
     }
 
     public void setAuditType(String auditType) {
@@ -625,6 +631,48 @@ public class Audit {
         creatScenarios(runs);
         saveEachResult(resultList);
 
+        // reset each attribute value
+        youSurvive = 0;
+        passengerSurvive = 0;
+        pedestrianSurvive = 0;
+        greenSurvive = 0;
+        redSurvive = 0;
+        humanSurvive = 0;
+        animalSurvive = 0;
+        petSurvive = 0;
+        maleSurvive = 0;
+        femaleSurvive = 0;
+        avgBodySurvive = 0;
+        athleticBodySurvive = 0;
+        overweightBodySurvive = 0;
+        babySurvive = 0;
+        childSurvive = 0;
+        adultSurvive = 0;
+        seniorSurvive = 0;
+        doctorSurvive = 0;
+        ceoSurvive = 0;
+        criminalSurvive = 0;
+        homelessSurvive = 0;
+        unemployedSurvive = 0;
+        teacherSurvive = 0;
+        cleanerSurvive = 0;
+        pregnantSurvive = 0;
+        birdSurvive = 0;
+        dogSurvive = 0;
+        catSurvive = 0;
+        turtleSurvive = 0;
+        cowSurvive = 0;
+        pigSurvive = 0;
+        elephantSurvive = 0;
+        deerSurvive = 0;
+    }
+
+
+    public void run() {
+
+        saveEachResult(resultList);
+
+        // reset each attribute value
         youSurvive = 0;
         passengerSurvive = 0;
         pedestrianSurvive = 0;

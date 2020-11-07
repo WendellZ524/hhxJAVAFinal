@@ -15,6 +15,9 @@ import java.util.List;
  * @author: HAIXIANG HUANG
  */
 public class EthicalEngine {
+    // the arraylist contains all scenarios, and should be the input for Audit constructor
+    private static ArrayList<Scenario> scenarioFromCSV;
+
     static class InvalidDataFormatException extends Exception {
         public InvalidDataFormatException() {
             super();
@@ -45,11 +48,15 @@ public class EthicalEngine {
         }
     }
 
-    public static int getLineNumber() {
-        int i = 1;
-        StackTraceElement[] stacks = new Throwable().getStackTrace();
-        int lineNumber = stacks[i].getLineNumber();
-        return lineNumber;
+
+
+    /**
+     * To find if there's digits in a string
+     * @param str Input a String
+     * @return boolean if the string has digits
+     */
+    public static boolean isDigit(String str){
+        return str.matches("[0-9]{1,}");
     }
 
     private static ArrayList<String[]> importedCSVData = new ArrayList<String[]>();
@@ -195,21 +202,23 @@ public class EthicalEngine {
         }
     }
 
-    public ArrayList<Scenario> createCSVScenario() {
+    public static void createCSVScenario() {
 
         ArrayList<Scenario> ScenarioList = new ArrayList<Scenario>();
         ArrayList<Persona> passenger = new ArrayList<Persona>();
         ArrayList<Persona> pedestrian = new ArrayList<Persona>();
 
         int ScenarioID = -1;
+        int lineCounter=1;   // it's not 0 because the title row has been removed from CSV
 
         for (String[] line : importedCSVData) {  // For each line in CSV
+            lineCounter++;
             try {
                 // if in rows that not have 10 values (except for scenario and End Mark)
                 // throw an Exception and continue
                 if (line.length != 10 && !line[0].startsWith("scenario") && !line[0].equals("End Mark")) {
                     throw new InvalidDataFormatException("WARNING: invalid data format in config file in" +
-                            "line < " + getLineNumber() + " >");
+                            "line < " + lineCounter + " >");
                 }
             } catch (InvalidDataFormatException e) {
                 System.out.println(e.getMessage());
@@ -270,19 +279,19 @@ public class EthicalEngine {
                     // adding gender
                     Persona.Gender gender = null;
                     try {
-                        if (!line[1].equals("")) {
+                        if (!line[1].equals("") || ! isDigit(line[1])) {
                             if (genderList.contains(line[1].toUpperCase())) {
                                 gender = Persona.Gender.valueOf(line[1].toUpperCase());
                             } else {
                                 throw new InvalidCharacteristicException(
                                         "WARNING: invalid characteristic in config file in" +
-                                                "line < " + getLineNumber() + " >");
+                                                "line < " + lineCounter + " >");
                             }
                         }
                         else { // if the gender cell is empty
                             throw new NumberFormatException(
                                     "WARNING: invalid number format in config file in" +
-                                    "line < " + getLineNumber() + " >");
+                                    "line < " + lineCounter + " >");
                         }
                     } catch (InvalidCharacteristicException | NumberFormatException e) {
                         // reset to the default value
@@ -296,19 +305,19 @@ public class EthicalEngine {
                     // adding bodyType
                     Persona.BodyType bodyType = null;
                     try {
-                        if (!line[3].equals("")) {
+                        if (!line[3].equals("")|| ! isDigit(line[3])) {
                             if (bodyList.contains(line[3].toUpperCase())) {
                                 bodyType = Persona.BodyType.valueOf(line[3].toUpperCase());
                             } else {
                                 throw new InvalidCharacteristicException(
                                         "WARNING: invalid characteristic in config file in" +
-                                                "line < " + getLineNumber() + " >");
+                                                "line < " + lineCounter + " >");
                             }
                         }
                         else { // if the gender cell is empty
                             throw new NumberFormatException(
                                     "WARNING: invalid number format in config file in" +
-                                            "line < " + getLineNumber() + " >");
+                                            "line < " + lineCounter + " >");
                         }
                     } catch (InvalidCharacteristicException | NumberFormatException e) {
                         bodyType = Persona.BodyType.UNSPECIFIED;
@@ -318,20 +327,20 @@ public class EthicalEngine {
                     // adding profession
                     Persona.Profession profession = null;
                     try {
-                        if (!line[4].equals("")) {
+                        if (!line[4].equals("")|| ! isDigit(line[4])) {
                             // check if the value is in the profession array
                             if (professionList.contains(line[4].toUpperCase())) {
                                 profession = Persona.Profession.valueOf(line[4].toUpperCase());
                             } else {
                                 throw new InvalidCharacteristicException(
                                         "WARNING: invalid characteristic in config file in" +
-                                                "line < " + getLineNumber() + " >");
+                                                "line < " + lineCounter + " >");
                             }
                         }
                         else { // if the gender cell is empty
                             throw new NumberFormatException(
                                     "WARNING: invalid number format in config file in" +
-                                            "line < " + getLineNumber() + " >");
+                                            "line < " + lineCounter + " >");
                         }
 
                     } catch (InvalidCharacteristicException | NumberFormatException e) {
@@ -358,18 +367,18 @@ public class EthicalEngine {
                     Persona.Gender gender = null;
                     try {
                         if (!line[1].equals("")) {
-                            if (genderList.contains(line[1].toUpperCase())) {
+                            if (genderList.contains(line[1].toUpperCase())|| ! isDigit(line[1])) {
                                 gender = Persona.Gender.valueOf(line[1].toUpperCase());
                             } else {
                                 throw new InvalidCharacteristicException(
                                         "WARNING: invalid characteristic in config file in" +
-                                                "line < " + getLineNumber() + " >");
+                                                "line < " + lineCounter + " >");
                             }
                         }
                         else { // if the gender cell is empty
                             throw new NumberFormatException(
                                     "WARNING: invalid number format in config file in" +
-                                            "line < " + getLineNumber() + " >");
+                                            "line < " + lineCounter+ " >");
                         }
                     } catch (InvalidCharacteristicException | NumberFormatException e) {
                         // reset to the default value
@@ -383,18 +392,18 @@ public class EthicalEngine {
                     Persona.BodyType bodyType = null;
                     try {
                         if (!line[3].equals("")) {
-                            if (bodyList.contains(line[3].toUpperCase())) {
+                            if (bodyList.contains(line[3].toUpperCase())|| ! isDigit(line[3])) {
                                 bodyType = Persona.BodyType.valueOf(line[3].toUpperCase());
                             } else {
                                 throw new InvalidCharacteristicException(
                                         "WARNING: invalid characteristic in config file in" +
-                                                "line < " + getLineNumber() + " >");
+                                                "line < " + lineCounter + " >");
                             }
                         }
                         else {
                             throw new NumberFormatException(
                                     "WARNING: invalid number format in config file in" +
-                                            "line < " + getLineNumber() + " >");
+                                            "line < " + lineCounter + " >");
                         }
                     } catch (InvalidCharacteristicException | NumberFormatException e) {
                         bodyType = Persona.BodyType.UNSPECIFIED;
@@ -402,12 +411,8 @@ public class EthicalEngine {
                     }
 
                     Animal animal = new Animal(line[7]);
-//                    System.out.println("csv宠物"+line[8]);
-//                    System.out.println("是否设置为宠物"+line[8].equals("TRUE"));
                     animal.setPet(line[8].toUpperCase().equals("TRUE"));
 
-
-//                    System.out.println("是宠物吗: "+animal.isPet());
                     animal.setAge(age);
                     animal.setGender(gender);
                     animal.setBodyType(bodyType);
@@ -419,16 +424,32 @@ public class EthicalEngine {
                 }
             }
         }
-        return ScenarioList;
+        scenarioFromCSV=ScenarioList;
+//        return ScenarioList;
     }
 
+    /**
+     * To transform a scenario arraylist to array
+     * @param scenarioArrayList an scenarioList of type scenario
+     * @return a scenario array
+     */
+    public static Scenario[] toScenarioArray(ArrayList<Scenario> scenarioArrayList){
+        Scenario[] scenarioArr= new Scenario[scenarioArrayList.size()];
+        for (int i = 0; i < scenarioArr.length; i++) {
+            scenarioArr[i]=scenarioArrayList.get(i);
+        }
+        return scenarioArr;
+    }
 
     public static void main(String[] args) {
-        importConfig("C:\\Users\\ae952\\Desktop\\Github Java\\hhxJAVAFinal\\tests\\config_3.csv");
-        EthicalEngine e1 = new EthicalEngine();
-        for (Scenario i : e1.createCSVScenario()) {
+        importConfig("C:\\Users\\ae952\\Desktop\\Github Java\\hhxJAVAFinal\\tests\\config.csv");
+        createCSVScenario();
+        for(Scenario i:scenarioFromCSV){
             System.out.println(i);
         }
+
+
+
     }
 }
 
