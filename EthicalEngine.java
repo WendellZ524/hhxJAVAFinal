@@ -439,22 +439,24 @@ public class EthicalEngine {
         return scenarioArr;
     }
 
-    public static String welcomeHeader() {
+    public static void printWelcome() {
         String header = "";
         try {
             BufferedReader reader = new BufferedReader(new FileReader("./welcome.ascii"));
 
-            while (reader.readLine() != null) {
-                header += reader.readLine();
-                header += "\n";
+            while ((header = reader.readLine()) != null) {
+                System.out.println(header);
             }
+//            while (reader.readLine() != null) {
+//                header += reader.readLine();
+//                header += "\n";
+//            }
             reader.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return header;
     }
 
 
@@ -470,15 +472,10 @@ public class EthicalEngine {
     }
 
 
-    private static void setForInteractiveMode() {
-
-    }
-
-
     public static void main(String[] args) {
 
 
-//        //        System.out.println(welcomeHeader());
+//        printWelcome(); // print the welcome header
 //        System.out.println("Do you consent to have your decisions saved to a file? (yes/no)");
 //        String userANS= sc.nextLine();
 //        if(userANS.equals("yes")){
@@ -493,7 +490,7 @@ public class EthicalEngine {
 
         String inputFilePath = ""; // the path of CSV file that should be imported
         String outputFilePath = "./results.log"; // the default path of statistic result
-        String str = "java EthicalEngine -i";
+        String str = "java EthicalEngine -h";
         // Using split() to split the user input
         String[] strArr = str.split(" ");
 
@@ -581,10 +578,12 @@ public class EthicalEngine {
             Audit a = new Audit();
             a.creatScenarios(100);
             // shallow clone of the scenarioArrayList in Audit
-            scenarioFromRandom =(ArrayList<Scenario>)a.getScenarioArrayList().clone();
+            scenarioFromRandom = (ArrayList<Scenario>) a.getScenarioArrayList().clone();
             a.clearArraylist(); // clear scenarioArrayList in Audit for further calculation
 
-
+            /**
+             * This block is the core of interactive decision making
+             */
             {   // shows how many scenarios left in the scenario arraylist
                 int scenariosLeft = scenarioFromRandom.size();
                 int scenariosCounter = 0;
@@ -664,6 +663,9 @@ public class EthicalEngine {
             createCSVScenario(); // create Scenarios using the data
             // scenarioFromCSV is the arraylist that contains scenarios based on CSV data
 
+            /**
+             * This block is the core of interactive decision making
+             */
             {   // shows how many scenarios left in the scenario arraylist
                 int scenariosLeft = scenarioFromCSV.size();
                 int scenariosCounter = 0;
@@ -749,88 +751,6 @@ public class EthicalEngine {
 
         }
 
-
-//        System.out.println("-c :"+configIsExist+" -i: "+interactiveIsExist+"-r: "+resultIsExist);
-
-
-//        {
-//            /** This block is to create 100 random scenarios and save the result to file
-//             * Only user input doesn't have configs can initiate
-//             */
-//            // if commands dont have config option
-//            if (!(strList.contains("-c") || strList.contains("--config"))) {
-//                // if there's no help option
-//                if (!(strList.contains("-h") || strList.contains("--help"))) {
-//                    // if there's also no interactive option
-//                    if (!(strList.contains("-i") || strList.contains("--interactive"))) {
-//                        // randomly creates 100 scenarios and run
-//                        a1.run(100);
-//                        // write the data from local variable to log file (current folder)
-//                        // printToFile() and printStatistic() will call toString()
-//                        a1.printToFile("./results.log");
-//                    }
-//
-//
-//                }
-//            }
-//        }
-//
-//
-//        for (int i = 0; i < strArr.length; i++) {
-//            if (strArr[i].equals("-h") || strArr[i].equals("--help")) {
-//                System.out.println(printHelp());
-//                break;
-//            } else if (strArr[i].equals("--config") || strArr[i].equals("-c")) {
-//                if (i == strArr.length - 1) { // if -c or --config is the last element in array
-//                    System.out.println(printHelp());
-//                    break;
-//                }
-//                // if the next cell in array is a flag (not outputFilePath or whatever)
-//                else if (strArr[i + 1].startsWith("-")) {
-//                    System.out.println(printHelp());
-//                    break;
-//                }
-//                // no interactive option, has a outputFilePath after config (import csv)
-//                else if (!(strList.contains("-i") || strList.contains("--interactive"))) {
-//                    importConfig(strArr[i + 1]); // import the data from CSV
-//                    createCSVScenario(); // create Scenarios using the data
-//                    // scenarioFromCSV is the arraylist that contains scenarios based on CSV data
-//
-//                    // transform the arraylist to Scenario[] array for audit constructor
-//                    Scenario[] scenarioArr = scenarioFromCSV.toArray(new Scenario[0]);
-//                    Audit a2 = new Audit(scenarioArr);
-//                    a2.run();
-//                    // if -r option is not given
-//                    if (strList.contains("-r") || strList.contains("--result")) {
-//                        // find path for result option
-//                        for (int j = 0; j < strArr.length; j++) {
-//                            if (strArr[j].equals("-r") || strArr[j].equals("--result")) {
-//                                outputFilePath = strArr[j + 1];
-//                                break;
-//                            }
-//                        }
-//                    }
-//                    a2.printToFile(outputFilePath); // save to default dir
-//                }
-//
-//            }
-//            // if there's an interactive option
-//            else if (strArr[i].equals("-i") || strArr[i].equals("-−interactive")) {
-//
-//            }
-//        }
-
-
-//        // transform the array to list to invoke help easily
-//        List<String> strList=Arrays.asList(strArr.clone());
-//
-//        for(String i: strList){
-//            System.out.println(i);
-//        }
-//        // find if the list contains relevant flag
-//        if(strList.contains("-h")||strList.contains("--help")){
-//            System.out.println(printHelp());
-//        }
 
     }
 
