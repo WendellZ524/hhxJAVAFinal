@@ -15,6 +15,10 @@ public class Audit {
 
     private ArrayList<Scenario> scenarioArrayList = new ArrayList<Scenario>();
 
+    public ArrayList<Scenario> getScenarioArrayList() {
+        return scenarioArrayList;
+    }
+
     private ArrayList<String> resultList = new ArrayList<String>();
     // the hashmap is the aggregate storage of all values to be output
     private HashMap<String, Double> map = new HashMap<String, Double>();
@@ -83,6 +87,16 @@ public class Audit {
         // transform the scenario array to the list then to the arraylist
         List<Scenario> tempList= Arrays.asList(scenarioArr.clone());
         this.scenarioArrayList = new ArrayList<Scenario>(tempList);
+    }
+
+    /**
+     * To add one scenario to scenarioArrayList
+     * @param scenario a scenario instance
+     */
+    public void addScenario(Scenario scenario){
+        Scenario s=new Scenario();
+        s=scenario;
+        scenarioArrayList.add(s);
     }
 
     public void setAuditType(String auditType) {
@@ -670,7 +684,6 @@ public class Audit {
 
 
     public void run() {
-
         saveEachResult(resultList);
 
         // reset each attribute value

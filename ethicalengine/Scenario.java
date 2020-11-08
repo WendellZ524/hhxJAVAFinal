@@ -8,6 +8,8 @@ package ethicalengine;
  */
 public class Scenario {
     private boolean legalCrossing;
+    // this variable is for interactive mode setting that allow passenger live
+    private int passengerLiveWeight=0;
 
     public void setPassengers(Persona[] passengers) {
         this.passengers = passengers;
@@ -15,6 +17,12 @@ public class Scenario {
 
     public void setPedestrians(Persona[] pedestrians) {
         this.pedestrians = pedestrians;
+    }
+    public void setPassengerLiveWeight(int passengerLiveWeight){
+        this.passengerLiveWeight=passengerLiveWeight;
+    }
+    public int getPassengerLiveWeight(){
+        return passengerLiveWeight;
     }
 
     private Persona[] passengers;

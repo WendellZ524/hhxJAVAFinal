@@ -1,8 +1,10 @@
 import ethicalengine.*;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 
 /**
@@ -11,8 +13,13 @@ import java.util.List;
  * @author: HAIXIANG HUANG
  */
 public class EthicalEngine {
-    // the arraylist contains all scenarios, and should be the input for Audit constructor
+
+    private static Scanner sc = new Scanner(System.in);
+    // the arraylist contains all CSV based scenarios, and should be the input for Audit constructor
     private static ArrayList<Scenario> scenarioFromCSV;
+
+    // the arraylist contains all random generated scenarios
+    private static ArrayList<Scenario> scenarioFromRandom;
 
     static class InvalidDataFormatException extends Exception {
         public InvalidDataFormatException() {
@@ -66,10 +73,19 @@ public class EthicalEngine {
      * @return Decision: which group to save
      */
     public static Decision decide(Scenario scenario) {
-        // a rather random decision engine
-        // TOOD: take into account at least 5 scenario characteristics
+
+
         Double passengerWeight = 0.5;
         Double pedestrianWeight = 0.5;
+        // for interactive mode setting that allow passenger live
+        if (scenario.getPassengerLiveWeight() > 0) {
+            passengerWeight += 9999;
+        }
+        // for interactive mode setting that allow pedestrian live
+        if (scenario.getPassengerLiveWeight() < 0) {
+            pedestrianWeight += 9999;
+        }
+
         // if the peds are crossing illegally
         if (!scenario.isLegalCrossing()) {
             pedestrianWeight -= 0.5;
@@ -168,7 +184,7 @@ public class EthicalEngine {
 
                 //add all CSV data to the line (one line at a time)
                 while ((line = reader.readLine()) != null) {
-                    String[] item = line.split(",");//CSV格式文件为逗号分隔符文件，这里根据逗号切分
+                    String[] item = line.split(",");
                     importedCSVData.add(item);
                 }
                 reader.close();
@@ -422,22 +438,24 @@ public class EthicalEngine {
         }
         return scenarioArr;
     }
-    public static String welcomeHeader(){
-        String header ="";
-        try {
-        BufferedReader reader = new BufferedReader(new FileReader("./welcome.ascii"));
 
-        while (reader.readLine() != null) {
-            header+=reader.readLine();
-            header+="\n";
-        }
-        reader.close();
+    public static String welcomeHeader() {
+        String header = "";
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("./welcome.ascii"));
+
+            while (reader.readLine() != null) {
+                header += reader.readLine();
+                header += "\n";
+            }
+            reader.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-    return header;}
+        return header;
+    }
 
 
     public static String printHelp() {
@@ -451,90 +469,340 @@ public class EthicalEngine {
         return help;
     }
 
+
+    private static void setForInteractiveMode(){
+
+    }
+
+
+
+
     public static void main(String[] args) {
-        String filepath = "./results.log"; // the default path of statistic result
-        Audit a1 = new Audit();
-        System.out.println(welcomeHeader());
-        String str = "java EthicalEngine -h";
+
+
+
+//        //        System.out.println(welcomeHeader());
+//        System.out.println("Do you consent to have your decisions saved to a file? (yes/no)");
+//        String userANS= sc.nextLine();
+//        if(userANS.equals("yes")){
+//
+//        }
+//        else if(userANS.equals("no")){
+//
+//        }
+//        else {
+//            // throw exception
+//        }
+
+        String inputFilePath = ""; // the path of CSV file that should be imported
+        String outputFilePath = "./results.log"; // the default path of statistic result
+        String str = "java EthicalEngine -i";
         // Using split() to split the user input
         String[] strArr = str.split(" ");
 
         // transform the array to list to facilitate searching flag
         List<String> strList = Arrays.asList(strArr);
-
         for (String i : strArr) {
             System.out.println(i);
         }
 
-        {
-            /** This block is to create 100 random scenarios and save the result to file
-             * Only user input doesn't have configs can initiate
-             */
-            // if commands dont have config option
-            if (!(strList.contains("-c") || strList.contains("--config"))) {
-                // if there's no help option
-                if (!(strList.contains("-h") || strList.contains("--help"))) {
-                    // if there's also no interactive option
-                    if (!(strList.contains("-i") || strList.contains("--interactive"))) {
-                        // randomly creates 100 scenarios and run
-                        a1.run(100);
-                        // write the data from local variable to log file (current folder)
-                        // printToFile() and printStatistic() will call toString()
-                        a1.printToFile("./results.log");
+        int configIsExist = -1;
+        int interactiveIsExist = -1;
+        int resultIsExist = -1;
 
-                    }
+        // if has help option
+        if (strList.contains("-h") || strList.contains("--help")) {
+            System.out.println(printHelp());
+            System.exit(0);
+        } else {
+
+            // if has config option
+            if (strList.contains("-c") || strList.contains("--config")) {
+                configIsExist = strList.indexOf("-c"); // see if -c exists
+                if (configIsExist == -1) { // if -c not exists
+                    configIsExist = strList.indexOf("--config"); // see if --config exists
+                    // if --config exists, update configIsExist
                 }
+                // if the next index is a path containing csv
+                if (strList.get(configIsExist + 1).contains(".csv")) {
+                    inputFilePath = strList.get(configIsExist + 1);
+                } else { // the format is wrong
+                    System.out.println(printHelp());
+                }
+            }
+
+            // if has interactive option
+            if (strList.contains("-i") || strList.contains("--interactive")) {
+                interactiveIsExist = strList.indexOf("-i");
+                if (interactiveIsExist == -1) { // if -i not exists
+                    interactiveIsExist = strList.indexOf("--config"); // see if --interactive exists
+                    // if --interactive exist, update interactiveIsExist
+                }
+            }
+
+            // if has results option
+            if (strList.contains("-r") || strList.contains("--results")) {
+                resultIsExist = strList.indexOf("-r"); // see if -r exists
+                if (resultIsExist == -1) { // if -r not exists
+                    resultIsExist = strList.indexOf("--results"); // see if --results exists
+                    // if --results exists, update resultIsExist
+                }
+                outputFilePath = strList.get(resultIsExist + 1);
+
             }
         }
 
 
-        for (int i = 0; i < strArr.length; i++) {
-            if (strArr[i].equals("-h") || strArr[i].equals("--help")) {
-                System.out.println(printHelp());
-                break;
-            } else if (strArr[i].equals("--config") || strArr[i].equals("-c")) {
-                if (i == strArr.length - 1) { // if -c or --config is the last element in array
-                    System.out.println(printHelp());
-                    break;
-                }
-                // if the next cell in array is a flag (not filepath or whatever)
-                else if (strArr[i + 1].equals("-c") || strArr[i + 1].equals("--config")
-                        || strArr[i + 1].equals("-h") || strArr[i + 1].equals("--help")
-                        || strArr[i + 1].equals("-r") || strArr[i + 1].equals("--results")
-                        || strArr[i + 1].equals("-i")
-                        || strArr[i + 1].equals("--interactive")) {
-                    System.out.println(printHelp());
-                    break;
-                }
-                // no interactive option, has a filepath after config (import csv)
-                else if (!(strList.contains("-i") || strList.contains("--interactive"))) {
-                    importConfig(strArr[i + 1]); // import the data from CSV
-                    createCSVScenario(); // create Scenarios using the data
-                    // scenarioFromCSV is the arraylist that contains scenarios based on CSV data
+        // if no config or interactive option
+        if (configIsExist == -1 && interactiveIsExist == -1) {
+            Audit a1 = new Audit();
+            // generate 100 random scenarios
+            a1.run(100);
+            // write the data from local variable to log file (current folder)
+            // printToFile() and printStatistic() will call toString()
+            a1.printToFile(outputFilePath);
+        }
 
-                    // transform the arraylist to Scenario[] array for audit constructor
-                    Scenario[] scenarioArr = scenarioFromCSV.toArray(new Scenario[0]);
-                    Audit a2 = new Audit(scenarioArr);
-                    a2.run();
-                    // if -r option is not given
-                    if (strList.contains("-r") || strList.contains("--result")) {
-                        // find path for result option
-                        for (int j = 0; j < strArr.length; j++) {
-                            if (strArr[j].equals("-r") || strArr[j].equals("--result")) {
-                                filepath = strArr[j + 1];
-                                break;
+        // if there's config without interactive
+        if (configIsExist == 1 && interactiveIsExist == -1) {
+            importConfig(inputFilePath); // import the data from CSV
+            createCSVScenario(); // create Scenarios using the data
+            // scenarioFromCSV is the arraylist that contains scenarios based on CSV data
+
+            // transform the arraylist to Scenario[] array for audit constructor
+            Scenario[] scenarioArr = scenarioFromCSV.toArray(new Scenario[0]);
+            Audit a2 = new Audit(scenarioArr);
+            a2.setAuditType("User");
+            a2.run();
+            a2.printStatistic();
+        }
+
+
+        // interactive mode without config
+        if (configIsExist == -1 && interactiveIsExist != -1) {
+            // random create 100 scenarios
+            Audit a=new Audit();
+            a.creatScenarios(100);
+            scenarioFromRandom=a.getScenarioArrayList();
+
+            {   // shows how many scenarios left in the scenario arraylist
+                int scenariosLeft = scenarioFromRandom.size();
+                int scenariosCounter = 0;
+
+                String continueAns = "yes";
+                String quitAns = "a"; // can't preset to "" (because it is "enter")
+                String saveGroup = "";
+                outerLoop:
+                do {
+                    if (continueAns.equals("yes")) {
+                        if (scenariosLeft >= 3) {
+                            for (int i = 0; i < 3; i++) {
+                                // print each scenario
+                                System.out.println(scenarioFromRandom.get(scenariosCounter));
+                                while (true) { // decide which group to live
+                                    System.out.println("Who should be saved? " +
+                                            "(passenger(s) [1] or pedestrian(s) [2])");
+                                    saveGroup = sc.nextLine();
+                                    if (saveGroup.equals("1") || saveGroup.equals("passenger") ||
+                                            saveGroup.equals("passengers")) {
+                                        // set to positive int to allow passenger live
+                                        scenarioFromRandom.get(scenariosCounter).setPassengerLiveWeight(1);
+                                        break;
+                                    } else if (saveGroup.equals("2") || saveGroup.equals("pedestrian") ||
+                                            saveGroup.equals("pedestrians")) {
+                                        // set to negative int to allow pedestrian live
+                                        scenarioFromRandom.get(scenariosCounter).setPassengerLiveWeight(-1);
+                                        break;
+                                    }
+                                }
+                                // add modified scenario to the audit instance
+                                a.addScenario(scenarioFromRandom.get(scenariosCounter));
+                                scenariosLeft -= 1;
+                                scenariosCounter += 1;
+                            }
+                        } else { // number of scenarios in the list is less than 3
+                            for (int i = 0; i < scenariosLeft; i++) {
+                                System.out.println(scenarioFromRandom.get(scenariosCounter));
+                                a.addScenario(scenarioFromRandom.get(scenariosCounter));
+                                scenariosLeft -= 1;
+                                scenariosCounter += 1;
+                            }
+                        }
+                    } else if (continueAns.equals("no")) {
+                        while (true) {
+                            System.out.println("That’s all. Press Enter to quit.");
+                            quitAns = sc.nextLine();
+                            if (quitAns.equals("")) { // enter
+                                break outerLoop;
                             }
                         }
                     }
-                    a2.printToFile(filepath); // save to default dir
-                }
-
+                    System.out.println("Would you like to continue? (yes/no)");
+                    continueAns = sc.nextLine();
+                    if (scenariosLeft == 0) {
+                        System.out.println("That’s all. Press Enter to quit.");
+                        quitAns = sc.nextLine();
+                        if (quitAns.equals("")) { // enter
+                            break;
+                        }
+                    }
+                } while (true);
+                a.setAuditType("User");
+                a.run();
+                a.printStatistic();
             }
-            // if there's an interactive option
-            else if (strArr[i].equals("-i") || strArr[i].equals("-−interactive")) {
 
-            }
+
+
         }
+
+
+        // interactive mode with config
+        if (configIsExist != -1 && interactiveIsExist != -1) {
+            // using scenario from imported CSV
+            importConfig(inputFilePath); // import the data from CSV
+            createCSVScenario(); // create Scenarios using the data
+            // scenarioFromCSV is the arraylist that contains scenarios based on CSV data
+
+            {   // shows how many scenarios left in the scenario arraylist
+                int scenariosLeft = scenarioFromCSV.size();
+                int scenariosCounter = 0;
+                Audit a = new Audit();
+                String continueAns = "yes";
+                String quitAns = "a"; // can't preset to "" (because it is "enter")
+                String saveGroup = "";
+                outerLoop:
+                do {
+                    if (continueAns.equals("yes")) {
+                        if (scenariosLeft >= 3) {
+                            for (int i = 0; i < 3; i++) {
+                                // print each scenario
+                                System.out.println(scenarioFromCSV.get(scenariosCounter));
+                                while (true) { // decide which group to live
+                                    System.out.println("Who should be saved? " +
+                                            "(passenger(s) [1] or pedestrian(s) [2])");
+                                    saveGroup = sc.nextLine();
+                                    if (saveGroup.equals("1") || saveGroup.equals("passenger") ||
+                                            saveGroup.equals("passengers")) {
+                                        // set to positive int to allow passenger live
+                                        scenarioFromCSV.get(scenariosCounter).setPassengerLiveWeight(1);
+                                        break;
+                                    } else if (saveGroup.equals("2") || saveGroup.equals("pedestrian") ||
+                                            saveGroup.equals("pedestrians")) {
+                                        // set to negative int to allow pedestrian live
+                                        scenarioFromCSV.get(scenariosCounter).setPassengerLiveWeight(-1);
+                                        break;
+                                    }
+                                }
+                                // add modified scenario to the audit instance
+                                a.addScenario(scenarioFromCSV.get(scenariosCounter));
+                                scenariosLeft -= 1;
+                                scenariosCounter += 1;
+                            }
+                        } else { // number of scenarios in the list is less than 3
+                            for (int i = 0; i < scenariosLeft; i++) {
+                                System.out.println(scenarioFromCSV.get(scenariosCounter));
+                                a.addScenario(scenarioFromCSV.get(scenariosCounter));
+                                scenariosLeft -= 1;
+                                scenariosCounter += 1;
+                            }
+                        }
+                    } else if (continueAns.equals("no")) {
+                        while (true) {
+                            System.out.println("That’s all. Press Enter to quit.");
+                            quitAns = sc.nextLine();
+                            if (quitAns.equals("")) { // enter
+                                break outerLoop;
+                            }
+                        }
+                    }
+                    System.out.println("Would you like to continue? (yes/no)");
+                    continueAns = sc.nextLine();
+                    if (scenariosLeft == 0) {
+                        System.out.println("That’s all. Press Enter to quit.");
+                        quitAns = sc.nextLine();
+                        if (quitAns.equals("")) { // enter
+                            break;
+                        }
+                    }
+                } while (true);
+                a.setAuditType("User");
+                a.run();
+                a.printStatistic();
+            }
+
+        }
+
+
+//        System.out.println("-c :"+configIsExist+" -i: "+interactiveIsExist+"-r: "+resultIsExist);
+
+
+//        {
+//            /** This block is to create 100 random scenarios and save the result to file
+//             * Only user input doesn't have configs can initiate
+//             */
+//            // if commands dont have config option
+//            if (!(strList.contains("-c") || strList.contains("--config"))) {
+//                // if there's no help option
+//                if (!(strList.contains("-h") || strList.contains("--help"))) {
+//                    // if there's also no interactive option
+//                    if (!(strList.contains("-i") || strList.contains("--interactive"))) {
+//                        // randomly creates 100 scenarios and run
+//                        a1.run(100);
+//                        // write the data from local variable to log file (current folder)
+//                        // printToFile() and printStatistic() will call toString()
+//                        a1.printToFile("./results.log");
+//                    }
+//
+//
+//                }
+//            }
+//        }
+//
+//
+//        for (int i = 0; i < strArr.length; i++) {
+//            if (strArr[i].equals("-h") || strArr[i].equals("--help")) {
+//                System.out.println(printHelp());
+//                break;
+//            } else if (strArr[i].equals("--config") || strArr[i].equals("-c")) {
+//                if (i == strArr.length - 1) { // if -c or --config is the last element in array
+//                    System.out.println(printHelp());
+//                    break;
+//                }
+//                // if the next cell in array is a flag (not outputFilePath or whatever)
+//                else if (strArr[i + 1].startsWith("-")) {
+//                    System.out.println(printHelp());
+//                    break;
+//                }
+//                // no interactive option, has a outputFilePath after config (import csv)
+//                else if (!(strList.contains("-i") || strList.contains("--interactive"))) {
+//                    importConfig(strArr[i + 1]); // import the data from CSV
+//                    createCSVScenario(); // create Scenarios using the data
+//                    // scenarioFromCSV is the arraylist that contains scenarios based on CSV data
+//
+//                    // transform the arraylist to Scenario[] array for audit constructor
+//                    Scenario[] scenarioArr = scenarioFromCSV.toArray(new Scenario[0]);
+//                    Audit a2 = new Audit(scenarioArr);
+//                    a2.run();
+//                    // if -r option is not given
+//                    if (strList.contains("-r") || strList.contains("--result")) {
+//                        // find path for result option
+//                        for (int j = 0; j < strArr.length; j++) {
+//                            if (strArr[j].equals("-r") || strArr[j].equals("--result")) {
+//                                outputFilePath = strArr[j + 1];
+//                                break;
+//                            }
+//                        }
+//                    }
+//                    a2.printToFile(outputFilePath); // save to default dir
+//                }
+//
+//            }
+//            // if there's an interactive option
+//            else if (strArr[i].equals("-i") || strArr[i].equals("-−interactive")) {
+//
+//            }
+//        }
 
 
 //        // transform the array to list to invoke help easily
