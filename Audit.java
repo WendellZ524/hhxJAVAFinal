@@ -13,7 +13,7 @@ public class Audit {
 
     private String auditType = "Unspecified";
 
-    private ArrayList<Scenario> scenarioList = new ArrayList<Scenario>();
+    private ArrayList<Scenario> scenarioArrayList = new ArrayList<Scenario>();
 
     private ArrayList<String> resultList = new ArrayList<String>();
     // the hashmap is the aggregate storage of all values to be output
@@ -80,8 +80,9 @@ public class Audit {
     public Audit() {
     }
     public Audit(Scenario[] scenarioArr){
+        // transform the scenario array to the list then to the arraylist
         List<Scenario> tempList= Arrays.asList(scenarioArr.clone());
-        this.scenarioList= new ArrayList<Scenario>(tempList);
+        this.scenarioArrayList = new ArrayList<Scenario>(tempList);
     }
 
     public void setAuditType(String auditType) {
@@ -96,7 +97,7 @@ public class Audit {
     public void creatScenarios(int scenarioNum) {
         for (int i = 0; i < scenarioNum; i++) {
             ScenarioGenerator s = new ScenarioGenerator();
-            scenarioList.add(s.generate());
+            scenarioArrayList.add(s.generate());
         }
     }
 
@@ -190,7 +191,7 @@ public class Audit {
         }
 
         // Firstly, get passenger array in each scenario
-        for (Scenario i : scenarioList) {
+        for (Scenario i : scenarioArrayList) {
             // legality check at the same time
             if (i.isLegalCrossing()) {
                 greenList.add(1);
@@ -287,7 +288,7 @@ public class Audit {
      * This method runs the decide method and calculate the survival rate for different attributes.
      */
     public void calculateSurvivalRate() {
-        for (Scenario i : scenarioList) {
+        for (Scenario i : scenarioArrayList) {
             // run Ethical Engine's decide method
             String groupCanLive = EthicalEngine.decide(i).toString();
 
@@ -722,12 +723,15 @@ public class Audit {
         System.out.println(result);
     }
 
+
+
     /**
      * To print the results from toString() to the given file
      *
      * @param filepath the relative file path (including directory eg: "tests/testfile.txt")
      */
     public void printToFile(String filepath) {
+        toString();
         int indexOfEndDirectory = filepath.indexOf("/");
         try {
             if (indexOfEndDirectory == -1) {

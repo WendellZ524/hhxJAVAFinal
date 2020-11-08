@@ -1,8 +1,4 @@
-import com.sun.deploy.util.StringUtils;
-import com.sun.xml.internal.ws.wsdl.writer.document.soap.Body;
-import com.sun.xml.internal.ws.wsdl.writer.document.soap.BodyType;
 import ethicalengine.*;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,13 +45,13 @@ public class EthicalEngine {
     }
 
 
-
     /**
      * To find if there's digits in a string
+     *
      * @param str Input a String
      * @return boolean if the string has digits
      */
-    public static boolean isDigit(String str){
+    public static boolean isDigit(String str) {
         return str.matches("[0-9]{1,}");
     }
 
@@ -153,7 +149,7 @@ public class EthicalEngine {
 
 
     /**
-     * To import the data from CSV file to the arraylist importedCSVData
+     * To import the data from CSV file to the arraylist called importedCSVData
      *
      * @param filepath the path of file
      */
@@ -174,24 +170,11 @@ public class EthicalEngine {
                 while ((line = reader.readLine()) != null) {
                     String[] item = line.split(",");//CSV格式文件为逗号分隔符文件，这里根据逗号切分
                     importedCSVData.add(item);
-                    String last = item[item.length - 1];//这就是你要的数据了
-                    //int value = Integer.parseInt(last);//如果是数值，可以转化为数值
                 }
+                reader.close();
                 String[] endMarkArray = new String[1];
                 endMarkArray[0] = "End Mark";
                 importedCSVData.add(endMarkArray);
-
-//                //format the imported data
-//                String[] eachPersonaInstance=new String[11];
-//                for(String[] i:importedCSVData){
-//                    for(String j:i){
-//                        if(j.startsWith("scenario")){
-//
-//                        }
-//                        System.out.println(j);
-//                    }
-//                }
-
 
             }
         } catch (FileNotFoundException e) {
@@ -202,6 +185,10 @@ public class EthicalEngine {
         }
     }
 
+    /**
+     * To create Scenarios based on the imported CSV data (importedCSVData)
+     * An arraylist called scenarioFromCSV is imported and filled with scenarios
+     */
     public static void createCSVScenario() {
 
         ArrayList<Scenario> ScenarioList = new ArrayList<Scenario>();
@@ -209,7 +196,7 @@ public class EthicalEngine {
         ArrayList<Persona> pedestrian = new ArrayList<Persona>();
 
         int ScenarioID = -1;
-        int lineCounter=1;   // it's not 0 because the title row has been removed from CSV
+        int lineCounter = 1;   // it's not 0 because the title row has been removed from CSV
 
         for (String[] line : importedCSVData) {  // For each line in CSV
             lineCounter++;
@@ -279,7 +266,7 @@ public class EthicalEngine {
                     // adding gender
                     Persona.Gender gender = null;
                     try {
-                        if (!line[1].equals("") || ! isDigit(line[1])) {
+                        if (!line[1].equals("") || !isDigit(line[1])) {
                             if (genderList.contains(line[1].toUpperCase())) {
                                 gender = Persona.Gender.valueOf(line[1].toUpperCase());
                             } else {
@@ -287,11 +274,10 @@ public class EthicalEngine {
                                         "WARNING: invalid characteristic in config file in" +
                                                 "line < " + lineCounter + " >");
                             }
-                        }
-                        else { // if the gender cell is empty
+                        } else { // if the gender cell is empty
                             throw new NumberFormatException(
                                     "WARNING: invalid number format in config file in" +
-                                    "line < " + lineCounter + " >");
+                                            "line < " + lineCounter + " >");
                         }
                     } catch (InvalidCharacteristicException | NumberFormatException e) {
                         // reset to the default value
@@ -305,7 +291,7 @@ public class EthicalEngine {
                     // adding bodyType
                     Persona.BodyType bodyType = null;
                     try {
-                        if (!line[3].equals("")|| ! isDigit(line[3])) {
+                        if (!line[3].equals("") || !isDigit(line[3])) {
                             if (bodyList.contains(line[3].toUpperCase())) {
                                 bodyType = Persona.BodyType.valueOf(line[3].toUpperCase());
                             } else {
@@ -313,8 +299,7 @@ public class EthicalEngine {
                                         "WARNING: invalid characteristic in config file in" +
                                                 "line < " + lineCounter + " >");
                             }
-                        }
-                        else { // if the gender cell is empty
+                        } else { // if the gender cell is empty
                             throw new NumberFormatException(
                                     "WARNING: invalid number format in config file in" +
                                             "line < " + lineCounter + " >");
@@ -327,7 +312,7 @@ public class EthicalEngine {
                     // adding profession
                     Persona.Profession profession = null;
                     try {
-                        if (!line[4].equals("")|| ! isDigit(line[4])) {
+                        if (!line[4].equals("") || !isDigit(line[4])) {
                             // check if the value is in the profession array
                             if (professionList.contains(line[4].toUpperCase())) {
                                 profession = Persona.Profession.valueOf(line[4].toUpperCase());
@@ -336,15 +321,14 @@ public class EthicalEngine {
                                         "WARNING: invalid characteristic in config file in" +
                                                 "line < " + lineCounter + " >");
                             }
-                        }
-                        else { // if the gender cell is empty
+                        } else { // if the gender cell is empty
                             throw new NumberFormatException(
                                     "WARNING: invalid number format in config file in" +
                                             "line < " + lineCounter + " >");
                         }
 
                     } catch (InvalidCharacteristicException | NumberFormatException e) {
-                        profession= Persona.Profession.NONE;
+                        profession = Persona.Profession.NONE;
                         System.out.println(e.getMessage());
                     }
 
@@ -360,25 +344,23 @@ public class EthicalEngine {
                         pedestrian.add(human);
                     }
 
-                }
-                else if (line[0].equals("animal")) { // create an animal instance
+                } else if (line[0].equals("animal")) { // create an animal instance
 
                     // adding gender
                     Persona.Gender gender = null;
                     try {
                         if (!line[1].equals("")) {
-                            if (genderList.contains(line[1].toUpperCase())|| ! isDigit(line[1])) {
+                            if (genderList.contains(line[1].toUpperCase()) || !isDigit(line[1])) {
                                 gender = Persona.Gender.valueOf(line[1].toUpperCase());
                             } else {
                                 throw new InvalidCharacteristicException(
                                         "WARNING: invalid characteristic in config file in" +
                                                 "line < " + lineCounter + " >");
                             }
-                        }
-                        else { // if the gender cell is empty
+                        } else { // if the gender cell is empty
                             throw new NumberFormatException(
                                     "WARNING: invalid number format in config file in" +
-                                            "line < " + lineCounter+ " >");
+                                            "line < " + lineCounter + " >");
                         }
                     } catch (InvalidCharacteristicException | NumberFormatException e) {
                         // reset to the default value
@@ -392,15 +374,14 @@ public class EthicalEngine {
                     Persona.BodyType bodyType = null;
                     try {
                         if (!line[3].equals("")) {
-                            if (bodyList.contains(line[3].toUpperCase())|| ! isDigit(line[3])) {
+                            if (bodyList.contains(line[3].toUpperCase()) || !isDigit(line[3])) {
                                 bodyType = Persona.BodyType.valueOf(line[3].toUpperCase());
                             } else {
                                 throw new InvalidCharacteristicException(
                                         "WARNING: invalid characteristic in config file in" +
                                                 "line < " + lineCounter + " >");
                             }
-                        }
-                        else {
+                        } else {
                             throw new NumberFormatException(
                                     "WARNING: invalid number format in config file in" +
                                             "line < " + lineCounter + " >");
@@ -424,34 +405,161 @@ public class EthicalEngine {
                 }
             }
         }
-        scenarioFromCSV=ScenarioList;
-//        return ScenarioList;
+        scenarioFromCSV = ScenarioList;
+
     }
 
     /**
      * To transform a scenario arraylist to array
+     *
      * @param scenarioArrayList an scenarioList of type scenario
      * @return a scenario array
      */
-    public static Scenario[] toScenarioArray(ArrayList<Scenario> scenarioArrayList){
-        Scenario[] scenarioArr= new Scenario[scenarioArrayList.size()];
+    public static Scenario[] toScenarioArray(ArrayList<Scenario> scenarioArrayList) {
+        Scenario[] scenarioArr = new Scenario[scenarioArrayList.size()];
         for (int i = 0; i < scenarioArr.length; i++) {
-            scenarioArr[i]=scenarioArrayList.get(i);
+            scenarioArr[i] = scenarioArrayList.get(i);
         }
         return scenarioArr;
     }
+    public static String welcomeHeader(){
+        String header ="";
+        try {
+        BufferedReader reader = new BufferedReader(new FileReader("./welcome.ascii"));
+
+        while (reader.readLine() != null) {
+            header+=reader.readLine();
+            header+="\n";
+        }
+        reader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    return header;}
+
+
+    public static String printHelp() {
+        String help = "EthicalEngine - COMP90041 - Final Project\n" +
+                "Usage: java EthicalEngine [arguments]\n" +
+                "Arguments:\n" +
+                "-c or --config Optional: path to config file\n" +
+                "-h or --help Print Help (this message) and exit\n" +
+                "-r or --results Optional: path to results log file\n" +
+                "-i or --interactive Optional: launches interactive mode\n";
+        return help;
+    }
 
     public static void main(String[] args) {
-        importConfig("C:\\Users\\ae952\\Desktop\\Github Java\\hhxJAVAFinal\\tests\\config.csv");
-        createCSVScenario();
-        for(Scenario i:scenarioFromCSV){
+        String filepath = "./results.log"; // the default path of statistic result
+        Audit a1 = new Audit();
+        System.out.println(welcomeHeader());
+        String str = "java EthicalEngine -h";
+        // Using split() to split the user input
+        String[] strArr = str.split(" ");
+
+        // transform the array to list to facilitate searching flag
+        List<String> strList = Arrays.asList(strArr);
+
+        for (String i : strArr) {
             System.out.println(i);
         }
 
+        {
+            /** This block is to create 100 random scenarios and save the result to file
+             * Only user input doesn't have configs can initiate
+             */
+            // if commands dont have config option
+            if (!(strList.contains("-c") || strList.contains("--config"))) {
+                // if there's no help option
+                if (!(strList.contains("-h") || strList.contains("--help"))) {
+                    // if there's also no interactive option
+                    if (!(strList.contains("-i") || strList.contains("--interactive"))) {
+                        // randomly creates 100 scenarios and run
+                        a1.run(100);
+                        // write the data from local variable to log file (current folder)
+                        // printToFile() and printStatistic() will call toString()
+                        a1.printToFile("./results.log");
 
+                    }
+                }
+            }
+        }
+
+
+        for (int i = 0; i < strArr.length; i++) {
+            if (strArr[i].equals("-h") || strArr[i].equals("--help")) {
+                System.out.println(printHelp());
+                break;
+            } else if (strArr[i].equals("--config") || strArr[i].equals("-c")) {
+                if (i == strArr.length - 1) { // if -c or --config is the last element in array
+                    System.out.println(printHelp());
+                    break;
+                }
+                // if the next cell in array is a flag (not filepath or whatever)
+                else if (strArr[i + 1].equals("-c") || strArr[i + 1].equals("--config")
+                        || strArr[i + 1].equals("-h") || strArr[i + 1].equals("--help")
+                        || strArr[i + 1].equals("-r") || strArr[i + 1].equals("--results")
+                        || strArr[i + 1].equals("-i")
+                        || strArr[i + 1].equals("--interactive")) {
+                    System.out.println(printHelp());
+                    break;
+                }
+                // no interactive option, has a filepath after config (import csv)
+                else if (!(strList.contains("-i") || strList.contains("--interactive"))) {
+                    importConfig(strArr[i + 1]); // import the data from CSV
+                    createCSVScenario(); // create Scenarios using the data
+                    // scenarioFromCSV is the arraylist that contains scenarios based on CSV data
+
+                    // transform the arraylist to Scenario[] array for audit constructor
+                    Scenario[] scenarioArr = scenarioFromCSV.toArray(new Scenario[0]);
+                    Audit a2 = new Audit(scenarioArr);
+                    a2.run();
+                    // if -r option is not given
+                    if (strList.contains("-r") || strList.contains("--result")) {
+                        // find path for result option
+                        for (int j = 0; j < strArr.length; j++) {
+                            if (strArr[j].equals("-r") || strArr[j].equals("--result")) {
+                                filepath = strArr[j + 1];
+                                break;
+                            }
+                        }
+                    }
+                    a2.printToFile(filepath); // save to default dir
+                }
+
+            }
+            // if there's an interactive option
+            else if (strArr[i].equals("-i") || strArr[i].equals("-−interactive")) {
+
+            }
+        }
+
+
+//        // transform the array to list to invoke help easily
+//        List<String> strList=Arrays.asList(strArr.clone());
+//
+//        for(String i: strList){
+//            System.out.println(i);
+//        }
+//        // find if the list contains relevant flag
+//        if(strList.contains("-h")||strList.contains("--help")){
+//            System.out.println(printHelp());
+//        }
 
     }
+
+
+//        importConfig("tests/config.csv");
+//        createCSVScenario();
+//        for(Scenario i:scenarioFromCSV){
+//            System.out.println(i);
 }
+
+
+
+
 
 
 
