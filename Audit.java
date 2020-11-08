@@ -15,6 +15,10 @@ public class Audit {
 
     private ArrayList<Scenario> scenarioArrayList = new ArrayList<Scenario>();
 
+    public void clearArraylist(){
+        this.scenarioArrayList.clear();
+    }
+
     public ArrayList<Scenario> getScenarioArrayList() {
         return scenarioArrayList;
     }

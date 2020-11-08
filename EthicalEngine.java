@@ -79,11 +79,11 @@ public class EthicalEngine {
         Double pedestrianWeight = 0.5;
         // for interactive mode setting that allow passenger live
         if (scenario.getPassengerLiveWeight() > 0) {
-            passengerWeight += 9999;
+            passengerWeight += 100;
         }
         // for interactive mode setting that allow pedestrian live
         if (scenario.getPassengerLiveWeight() < 0) {
-            pedestrianWeight += 9999;
+            pedestrianWeight += 100;
         }
 
         // if the peds are crossing illegally
@@ -470,15 +470,12 @@ public class EthicalEngine {
     }
 
 
-    private static void setForInteractiveMode(){
+    private static void setForInteractiveMode() {
 
     }
 
 
-
-
     public static void main(String[] args) {
-
 
 
 //        //        System.out.println(welcomeHeader());
@@ -581,9 +578,12 @@ public class EthicalEngine {
         // interactive mode without config
         if (configIsExist == -1 && interactiveIsExist != -1) {
             // random create 100 scenarios
-            Audit a=new Audit();
+            Audit a = new Audit();
             a.creatScenarios(100);
-            scenarioFromRandom=a.getScenarioArrayList();
+            // shallow clone of the scenarioArrayList in Audit
+            scenarioFromRandom =(ArrayList<Scenario>)a.getScenarioArrayList().clone();
+            a.clearArraylist(); // clear scenarioArrayList in Audit for further calculation
+
 
             {   // shows how many scenarios left in the scenario arraylist
                 int scenariosLeft = scenarioFromRandom.size();
@@ -637,8 +637,7 @@ public class EthicalEngine {
                             }
                         }
                     }
-                    System.out.println("Would you like to continue? (yes/no)");
-                    continueAns = sc.nextLine();
+
                     if (scenariosLeft == 0) {
                         System.out.println("That’s all. Press Enter to quit.");
                         quitAns = sc.nextLine();
@@ -646,12 +645,13 @@ public class EthicalEngine {
                             break;
                         }
                     }
+                    System.out.println("Would you like to continue? (yes/no)");
+                    continueAns = sc.nextLine();
                 } while (true);
                 a.setAuditType("User");
                 a.run();
                 a.printStatistic();
             }
-
 
 
         }
@@ -702,6 +702,22 @@ public class EthicalEngine {
                         } else { // number of scenarios in the list is less than 3
                             for (int i = 0; i < scenariosLeft; i++) {
                                 System.out.println(scenarioFromCSV.get(scenariosCounter));
+                                while (true) { // decide which group to live
+                                    System.out.println("Who should be saved? " +
+                                            "(passenger(s) [1] or pedestrian(s) [2])");
+                                    saveGroup = sc.nextLine();
+                                    if (saveGroup.equals("1") || saveGroup.equals("passenger") ||
+                                            saveGroup.equals("passengers")) {
+                                        // set to positive int to allow passenger live
+                                        scenarioFromCSV.get(scenariosCounter).setPassengerLiveWeight(1);
+                                        break;
+                                    } else if (saveGroup.equals("2") || saveGroup.equals("pedestrian") ||
+                                            saveGroup.equals("pedestrians")) {
+                                        // set to negative int to allow pedestrian live
+                                        scenarioFromCSV.get(scenariosCounter).setPassengerLiveWeight(-1);
+                                        break;
+                                    }
+                                }
                                 a.addScenario(scenarioFromCSV.get(scenariosCounter));
                                 scenariosLeft -= 1;
                                 scenariosCounter += 1;
@@ -716,8 +732,6 @@ public class EthicalEngine {
                             }
                         }
                     }
-                    System.out.println("Would you like to continue? (yes/no)");
-                    continueAns = sc.nextLine();
                     if (scenariosLeft == 0) {
                         System.out.println("That’s all. Press Enter to quit.");
                         quitAns = sc.nextLine();
@@ -725,6 +739,8 @@ public class EthicalEngine {
                             break;
                         }
                     }
+                    System.out.println("Would you like to continue? (yes/no)");
+                    continueAns = sc.nextLine();
                 } while (true);
                 a.setAuditType("User");
                 a.run();
