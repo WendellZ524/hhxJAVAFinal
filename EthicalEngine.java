@@ -439,7 +439,7 @@ public class EthicalEngine {
         return scenarioArr;
     }
 
-    public static void printWelcome() {
+    public void printWelcome() {
         String header = "";
         try {
             BufferedReader reader = new BufferedReader(new FileReader("./welcome.ascii"));
@@ -473,9 +473,8 @@ public class EthicalEngine {
 
 
     public static void main(String[] args) {
-
-
-//        printWelcome(); // print the welcome header
+        EthicalEngine ethicalEngine = new EthicalEngine();
+        ethicalEngine.printWelcome(); // print the welcome header
         System.out.println("Do you consent to have your decisions saved to a file? (yes/no)");
         String consentANS;
         while (true) {
@@ -491,7 +490,7 @@ public class EthicalEngine {
 
         String inputFilePath = ""; // the path of CSV file that should be imported
         String outputFilePath = "./results.log"; // the default path of statistic result
-        String str = "java EthicalEngine -i";
+        String str = "java EthicalEngine -h";
         // Using split() to split the user input
         String[] strArr = str.split(" ");
 
@@ -643,7 +642,17 @@ public class EthicalEngine {
                                 scenariosCounter += 1;
                             }
                         }
-                    } else if (continueAns.equals("no")) {
+                    } else {
+                        if (quitInteractive(consentANS, a, continueAns)) break outerLoop;
+                    }
+
+                    if (scenariosLeft == 0) {
+                        a.setAuditType("User");
+                        a.run();
+                        a.printStatistic();
+                        if (consentANS.equals("yes")) { // save the user log if permitted
+                            a.printToFile("./user.log");
+                        }
                         while (true) {
                             System.out.println("That’s all. Press Enter to quit.");
                             quitAns = sc.nextLine();
@@ -651,24 +660,11 @@ public class EthicalEngine {
                                 break outerLoop;
                             }
                         }
-                    }
 
-                    if (scenariosLeft == 0) {
-                        System.out.println("That’s all. Press Enter to quit.");
-                        quitAns = sc.nextLine();
-                        if (quitAns.equals("")) { // enter
-                            break;
-                        }
                     }
                     System.out.println("Would you like to continue? (yes/no)");
                     continueAns = sc.nextLine();
                 } while (true);
-                a.setAuditType("User");
-                a.run();
-                a.printStatistic();
-                if (consentANS.equals("yes")) { // save the user log if permitted
-                    a.printToFile("./user.log");
-                }
             }
         }
 
@@ -742,7 +738,14 @@ public class EthicalEngine {
                                 scenariosCounter += 1;
                             }
                         }
-                    } else if (continueAns.equals("no")) {
+                    } else if (quitInteractive(consentANS, a, continueAns)) break;
+                    if (scenariosLeft == 0) {
+                        a.setAuditType("User");
+                        a.run();
+                        a.printStatistic();
+                        if (consentANS.equals("yes")) { // save the user log if permitted
+                            a.printToFile("./user.log");
+                        }
                         while (true) {
                             System.out.println("That’s all. Press Enter to quit.");
                             quitAns = sc.nextLine();
@@ -751,31 +754,37 @@ public class EthicalEngine {
                             }
                         }
                     }
-                    if (scenariosLeft == 0) {
-                        System.out.println("That’s all. Press Enter to quit.");
-                        quitAns = sc.nextLine();
-                        if (quitAns.equals("")) { // enter
-                            break;
-                        }
-                    }
                     System.out.println("Would you like to continue? (yes/no)");
                     continueAns = sc.nextLine();
                 } while (true);
-                a.setAuditType("User");
-                a.run();
-                a.printStatistic();
-                if (consentANS.equals("yes")) { // save the user log if permitted
-                    a.printToFile("./user.log");
-                }
             }
-
-
         }
 
 
     }
 
+    private static boolean quitInteractive(String consentANS, Audit audit, String continueAns) {
+        String quitAns;
+        if (continueAns.equals("no")) {
+            audit.setAuditType("User");
+            audit.run();
+            audit.printStatistic();
+            if (consentANS.equals("yes")) { // save the user log if permitted
+                audit.printToFile("./user.log");
+            }
+            while (true) {
+                System.out.println("That’s all. Press Enter to quit.");
+                quitAns =sc.nextLine();
+                if (quitAns.equals("")) { // enter
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
+
+
 
 
 

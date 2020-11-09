@@ -729,7 +729,7 @@ public class Audit {
     public String toString() {
         for (String i : resultList) {
             result += i;
-            result += "\n";
+
         }
         return result;
 
