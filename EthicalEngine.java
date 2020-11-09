@@ -476,21 +476,21 @@ public class EthicalEngine {
 
 
 //        printWelcome(); // print the welcome header
-//        System.out.println("Do you consent to have your decisions saved to a file? (yes/no)");
-//        String userANS= sc.nextLine();
-//        if(userANS.equals("yes")){
-//
-//        }
-//        else if(userANS.equals("no")){
-//
-//        }
-//        else {
-//            // throw exception
-//        }
+        System.out.println("Do you consent to have your decisions saved to a file? (yes/no)");
+        String userANS= sc.nextLine();
+        if(userANS.equals("yes")){
+
+        }
+        else if(userANS.equals("no")){
+
+        }
+        else {
+            // throw exception
+        }
 
         String inputFilePath = ""; // the path of CSV file that should be imported
         String outputFilePath = "./results.log"; // the default path of statistic result
-        String str = "java EthicalEngine -h";
+        String str = "java EthicalEngine ";
         // Using split() to split the user input
         String[] strArr = str.split(" ");
 
@@ -510,19 +510,24 @@ public class EthicalEngine {
             System.exit(0);
         } else {
 
-            // if has config option
-            if (strList.contains("-c") || strList.contains("--config")) {
-                configIsExist = strList.indexOf("-c"); // see if -c exists
-                if (configIsExist == -1) { // if -c not exists
-                    configIsExist = strList.indexOf("--config"); // see if --config exists
-                    // if --config exists, update configIsExist
+            try {
+                // if has config option
+                if (strList.contains("-c") || strList.contains("--config")) {
+                    configIsExist = strList.indexOf("-c"); // see if -c exists
+                    if (configIsExist == -1) { // if -c not exists
+                        configIsExist = strList.indexOf("--config"); // see if --config exists
+                        // if --config exists, update configIsExist
+                    }
+                    // if the next index is a path containing csv
+                    if (strList.get(configIsExist + 1).contains(".csv")) {
+                        inputFilePath = strList.get(configIsExist + 1);
+                    } else { // the format is wrong
+                        System.out.println(printHelp());
+                    }
                 }
-                // if the next index is a path containing csv
-                if (strList.get(configIsExist + 1).contains(".csv")) {
-                    inputFilePath = strList.get(configIsExist + 1);
-                } else { // the format is wrong
-                    System.out.println(printHelp());
-                }
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.out.println("The format is wrong");
+                System.out.println(printHelp()); // format is wrong
             }
 
             // if has interactive option
@@ -534,15 +539,20 @@ public class EthicalEngine {
                 }
             }
 
-            // if has results option
-            if (strList.contains("-r") || strList.contains("--results")) {
-                resultIsExist = strList.indexOf("-r"); // see if -r exists
-                if (resultIsExist == -1) { // if -r not exists
-                    resultIsExist = strList.indexOf("--results"); // see if --results exists
-                    // if --results exists, update resultIsExist
-                }
-                outputFilePath = strList.get(resultIsExist + 1);
+            try {
+                // if has results option
+                if (strList.contains("-r") || strList.contains("--results")) {
+                    resultIsExist = strList.indexOf("-r"); // see if -r exists
+                    if (resultIsExist == -1) { // if -r not exists
+                        resultIsExist = strList.indexOf("--results"); // see if --results exists
+                        // if --results exists, update resultIsExist
+                    }
+                    outputFilePath = strList.get(resultIsExist + 1);
 
+                }
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.out.println("The format is wrong");
+                System.out.println(printHelp()); // format is wrong
             }
         }
 
@@ -652,7 +662,6 @@ public class EthicalEngine {
                 a.printStatistic();
             }
 
-
         }
 
 
@@ -754,12 +763,8 @@ public class EthicalEngine {
 
     }
 
-
-//        importConfig("tests/config.csv");
-//        createCSVScenario();
-//        for(Scenario i:scenarioFromCSV){
-//            System.out.println(i);
 }
+
 
 
 
