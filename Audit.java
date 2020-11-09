@@ -744,11 +744,11 @@ public class Audit {
 
     /**
      * To print the results from toString() to the given file
-     *
+     * The printToFile won't call toString(), to avoid empty file,
+     * must either call toString() or printStatistic first.
      * @param filepath the relative file path (including directory eg: "tests/testfile.txt")
      */
     public void printToFile(String filepath) {
-        toString();
         int indexOfEndDirectory = filepath.indexOf("/");
         try {
             if (indexOfEndDirectory == -1) {

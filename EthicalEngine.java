@@ -491,7 +491,7 @@ public class EthicalEngine {
 
         String inputFilePath = ""; // the path of CSV file that should be imported
         String outputFilePath = "./results.log"; // the default path of statistic result
-        String str = "java EthicalEngine -c tests/config.csv -i";
+        String str = "java EthicalEngine -i";
         // Using split() to split the user input
         String[] strArr = str.split(" ");
 
@@ -566,8 +566,10 @@ public class EthicalEngine {
             // generate 100 random scenarios
             a1.run(100);
             // write the data from local variable to log file (current folder)
-            // printToFile() and printStatistic() will call toString()
-            a1.printToFile(outputFilePath);
+            // printStatistic() will call toString()
+            a1.printStatistic(); // print to command line
+            // to avoid empty file, either call toString() or printStatistic() before printToFile()
+            a1.printToFile(outputFilePath); // print to file
         }
 
         // if there's config without interactive
@@ -581,6 +583,8 @@ public class EthicalEngine {
             Audit a1 = new Audit(scenarioArr);
             a1.run();
             a1.printStatistic();
+            // to avoid empty file, either call toString() or printStatistic() before printToFile()
+            a1.printToFile(outputFilePath);
         }
 
 
