@@ -477,20 +477,21 @@ public class EthicalEngine {
 
 //        printWelcome(); // print the welcome header
         System.out.println("Do you consent to have your decisions saved to a file? (yes/no)");
-        String userANS= sc.nextLine();
-        if(userANS.equals("yes")){
+        String consentANS;
+        while (true) {
+            consentANS = sc.nextLine();
+            if (!consentANS.equals("yes") && !consentANS.equals("no")) {
+                System.out.println("Invalid response. " +
+                        "Do you consent to have your decisions saved to a file? (yes/no)");
+            } else { // if answer is yes, then save the statistic to user.log in interactive-part code
+                break;
+            }
+        }
 
-        }
-        else if(userANS.equals("no")){
-
-        }
-        else {
-            // throw exception
-        }
 
         String inputFilePath = ""; // the path of CSV file that should be imported
         String outputFilePath = "./results.log"; // the default path of statistic result
-        String str = "java EthicalEngine ";
+        String str = "java EthicalEngine -c tests/config.csv -i";
         // Using split() to split the user input
         String[] strArr = str.split(" ");
 
@@ -547,6 +548,8 @@ public class EthicalEngine {
                         resultIsExist = strList.indexOf("--results"); // see if --results exists
                         // if --results exists, update resultIsExist
                     }
+                    // if -r was provided, there must be a path followed
+                    // if -r option is not provided, save to default dir
                     outputFilePath = strList.get(resultIsExist + 1);
 
                 }
@@ -568,17 +571,16 @@ public class EthicalEngine {
         }
 
         // if there's config without interactive
-        if (configIsExist == 1 && interactiveIsExist == -1) {
+        if (configIsExist != -1 && interactiveIsExist == -1) {
             importConfig(inputFilePath); // import the data from CSV
             createCSVScenario(); // create Scenarios using the data
             // scenarioFromCSV is the arraylist that contains scenarios based on CSV data
 
             // transform the arraylist to Scenario[] array for audit constructor
             Scenario[] scenarioArr = scenarioFromCSV.toArray(new Scenario[0]);
-            Audit a2 = new Audit(scenarioArr);
-            a2.setAuditType("User");
-            a2.run();
-            a2.printStatistic();
+            Audit a1 = new Audit(scenarioArr);
+            a1.run();
+            a1.printStatistic();
         }
 
 
@@ -660,8 +662,10 @@ public class EthicalEngine {
                 a.setAuditType("User");
                 a.run();
                 a.printStatistic();
+                if (consentANS.equals("yes")) { // save the user log if permitted
+                    a.printToFile("./user.log");
+                }
             }
-
         }
 
 
@@ -711,7 +715,7 @@ public class EthicalEngine {
                                 scenariosCounter += 1;
                             }
                         } else { // number of scenarios in the list is less than 3
-                            for (int i = 0; i < scenariosLeft; i++) {
+                            for (int i = 0; i <= scenariosLeft; i++) {
                                 System.out.println(scenarioFromCSV.get(scenariosCounter));
                                 while (true) { // decide which group to live
                                     System.out.println("Who should be saved? " +
@@ -756,7 +760,11 @@ public class EthicalEngine {
                 a.setAuditType("User");
                 a.run();
                 a.printStatistic();
+                if (consentANS.equals("yes")) { // save the user log if permitted
+                    a.printToFile("./user.log");
+                }
             }
+
 
         }
 
