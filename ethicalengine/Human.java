@@ -126,14 +126,6 @@ public class Human extends Persona {
         }
     }
 
-
-    //tester
-//    public static void main(String[] args) {
-//        Human passenger1 = new Human(34, Human.Profession.HOMELESS,
-//                Gender.FEMALE, Persona.BodyType.ATHLETIC, false);
-//        passenger1.setPregnant(true);
-//        System.out.println(passenger1);
-//    }
 }
 
 

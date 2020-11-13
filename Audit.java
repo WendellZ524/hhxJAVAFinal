@@ -30,7 +30,7 @@ public class Audit {
     private String result = "";
 
 
-    private int roundCounts = 0;
+    private static int roundCounts = 0;
     private double sumAliveHumanAge = 0;
     private double aliveHumanAvgAge = 0;
 
@@ -191,6 +191,7 @@ public class Audit {
      *                      the passenger is alive.
      */
     public void Live(boolean passengerLive) {
+
         int passengerLiveFlag, pedestrianLiveFlag;
         Persona[] passenger;
         Persona[] pedestrian;
@@ -306,7 +307,9 @@ public class Audit {
      * This method runs the decide method and calculate the survival rate for different attributes.
      */
     public void calculateSurvivalRate() {
+
         for (Scenario i : scenarioArrayList) {
+            roundCounts+=1;
             // run Ethical Engine's decide method
             String groupCanLive = EthicalEngine.decide(i).toString();
 
@@ -624,12 +627,6 @@ public class Audit {
         // iterate through how many times the run() method have been run
         String result = "";
         double averageAge = 0;
-        String title = "======================================\n" +
-                "# " + auditType + " Audit\n" +
-                "======================================\n" +
-                "- % SAVED AFTER " + roundCounts + " RUNS\n";
-
-        result += title;
 
         for (Map.Entry<String, Double> i : descHashMap(map)) {
             if (!i.getKey().equals("average age")) {
@@ -638,14 +635,21 @@ public class Audit {
                 averageAge = i.getValue();
             }
         }
+
+        String title = "======================================\n" +
+                "# " + auditType + " Audit\n" +
+                "======================================\n" +
+                "- % SAVED AFTER " + roundCounts + " RUNS\n";
+
+
         result += "--" + "\n";
         result += "average age:" + String.format("%.2f", averageAge);
-        resultList.add(result);
+        resultList.add(title+result);
     }
 
 
     public void run(int runs) {
-        roundCounts += runs;
+//        roundCounts += runs;
         // create scenarios
         creatScenarios(runs);
         saveEachResult(resultList);

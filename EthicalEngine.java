@@ -490,9 +490,12 @@ public class EthicalEngine {
 
         String inputFilePath = ""; // the path of CSV file that should be imported
         String outputFilePath = "./results.log"; // the default path of statistic result
-        String str = "java EthicalEngine -h";
+
+
+        String str = "java EthicalEngine -i";
         // Using split() to split the user input
         String[] strArr = str.split(" ");
+//        strArr=args.clone();
 
         // transform the array to list to facilitate searching flag
         List<String> strList = Arrays.asList(strArr);
@@ -655,6 +658,9 @@ public class EthicalEngine {
                         }
                         while (true) {
                             System.out.println("That’s all. Press Enter to quit.");
+                            // Somehow the result is in the next 2 line
+                            // read again
+                            sc.nextLine();
                             quitAns = sc.nextLine();
                             if (quitAns.equals("")) { // enter
                                 break outerLoop;
