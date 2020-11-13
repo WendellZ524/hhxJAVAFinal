@@ -467,8 +467,9 @@ public class EthicalEngine {
 
     /**
      * This is the exit point of loop when doing interactive decision making
-     * @param consentANS if user consent to save their results
-     * @param audit instance of Audit
+     *
+     * @param consentANS  if user consent to save their results
+     * @param audit       instance of Audit
      * @param continueAns the answer if user still want to continue when a round finish
      * @return if false then break the loop, if true continue the loop
      */
@@ -498,6 +499,7 @@ public class EthicalEngine {
         ethicalEngine.printWelcome(); // print the welcome header
         System.out.println("Do you consent to have your decisions saved to a file? (yes/no)");
         String consentANS;
+        // keeping user input valid answer
         while (true) {
             consentANS = sc.nextLine();
             if (!consentANS.equals("yes") && !consentANS.equals("no")) {
@@ -511,15 +513,12 @@ public class EthicalEngine {
         String inputFilePath = ""; // the path of CSV file that should be imported
         String outputFilePath = "./results.log"; // the default path of statistic result
 
-
-        String str = "java EthicalEngine -h";
-        // Using split() to split the user input
-        String[] strArr = str.split(" ");
-//        strArr=args.clone();
+        // To receive the arguments from user
+        String[] strArr;
+        strArr = args.clone();
 
         // transform the array to list to facilitate searching flag
         List<String> strList = Arrays.asList(strArr);
-
 
         int configIsExist = -1;
         int interactiveIsExist = -1;
@@ -579,7 +578,6 @@ public class EthicalEngine {
             }
         }
 
-
         // if no config or interactive option
         if (configIsExist == -1 && interactiveIsExist == -1) {
             Audit a1 = new Audit();
@@ -613,7 +611,7 @@ public class EthicalEngine {
             // random create 100 scenarios
             Audit a = new Audit();
             a.creatScenarios(100);
-            // shallow clone of the scenarioArrayList in Audit
+            // shallow copy of the scenarioArrayList in Audit
             scenarioFromRandom = (ArrayList<Scenario>) a.getScenarioArrayList().clone();
             a.clearArraylist(); // clear scenarioArrayList in Audit for further calculation
 
@@ -641,12 +639,15 @@ public class EthicalEngine {
                                     if (saveGroup.equals("1") || saveGroup.equals("passenger") ||
                                             saveGroup.equals("passengers")) {
                                         // set to positive int to allow passenger live
-                                        scenarioFromRandom.get(scenariosCounter).setPassengerLiveWeight(1);
+                                        scenarioFromRandom.get(scenariosCounter).
+                                                setPassengerLiveWeight(1);
                                         break;
-                                    } else if (saveGroup.equals("2") || saveGroup.equals("pedestrian") ||
+                                    } else if (saveGroup.equals("2") ||
+                                            saveGroup.equals("pedestrian") ||
                                             saveGroup.equals("pedestrians")) {
                                         // set to negative int to allow pedestrian live
-                                        scenarioFromRandom.get(scenariosCounter).setPassengerLiveWeight(-1);
+                                        scenarioFromRandom.get(scenariosCounter).
+                                                setPassengerLiveWeight(-1);
                                         break;
                                     }
                                 }
@@ -676,7 +677,7 @@ public class EthicalEngine {
                         }
                         while (true) {
                             System.out.println("That's all. Press Enter to quit.");
-                            // Somehow the result is in the next 2 line
+                            // the result is in the next 2 line
                             // read again
                             sc.nextLine();
                             quitAns = sc.nextLine();
@@ -724,12 +725,15 @@ public class EthicalEngine {
                                     if (saveGroup.equals("1") || saveGroup.equals("passenger") ||
                                             saveGroup.equals("passengers")) {
                                         // set to positive int to allow passenger live
-                                        scenarioFromCSV.get(scenariosCounter).setPassengerLiveWeight(1);
+                                        scenarioFromCSV.get(scenariosCounter).
+                                                setPassengerLiveWeight(1);
                                         break;
-                                    } else if (saveGroup.equals("2") || saveGroup.equals("pedestrian") ||
+                                    } else if (saveGroup.equals("2") ||
+                                            saveGroup.equals("pedestrian") ||
                                             saveGroup.equals("pedestrians")) {
                                         // set to negative int to allow pedestrian live
-                                        scenarioFromCSV.get(scenariosCounter).setPassengerLiveWeight(-1);
+                                        scenarioFromCSV.get(scenariosCounter).
+                                                setPassengerLiveWeight(-1);
                                         break;
                                     }
                                 }
@@ -745,15 +749,19 @@ public class EthicalEngine {
                                     System.out.println("Who should be saved? " +
                                             "(passenger(s) [1] or pedestrian(s) [2])");
                                     saveGroup = sc.nextLine();
-                                    if (saveGroup.equals("1") || saveGroup.equals("passenger") ||
+                                    if (saveGroup.equals("1") ||
+                                            saveGroup.equals("passenger") ||
                                             saveGroup.equals("passengers")) {
                                         // set to positive int to allow passenger live
-                                        scenarioFromCSV.get(scenariosCounter).setPassengerLiveWeight(1);
+                                        scenarioFromCSV.get(scenariosCounter).
+                                                setPassengerLiveWeight(1);
                                         break;
-                                    } else if (saveGroup.equals("2") || saveGroup.equals("pedestrian") ||
+                                    } else if (saveGroup.equals("2") ||
+                                            saveGroup.equals("pedestrian") ||
                                             saveGroup.equals("pedestrians")) {
                                         // set to negative int to allow pedestrian live
-                                        scenarioFromCSV.get(scenariosCounter).setPassengerLiveWeight(-1);
+                                        scenarioFromCSV.get(scenariosCounter).
+                                                setPassengerLiveWeight(-1);
                                         break;
                                     }
                                 }
@@ -763,7 +771,7 @@ public class EthicalEngine {
                             }
                         }
                     } else if (quitInteractive(consentANS, a, continueAns)) break;
-                    if (scenariosLeft == 0) {
+                    if (scenariosLeft == 0) { // if there's no more scenarios, then end
                         a.setAuditType("User");
                         a.run();
                         a.printStatistic();
@@ -783,11 +791,7 @@ public class EthicalEngine {
                 } while (true);
             }
         }
-
-
     }
-
-
 }
 
 

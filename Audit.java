@@ -25,34 +25,44 @@ public class Audit {
 
     private String auditType = "Unspecified";
 
+    // The arraylist that contains all scenarios
     private ArrayList<Scenario> scenarioArrayList = new ArrayList<Scenario>();
 
+    /**
+     * To delete everything in the scenarioArrayList
+     */
     public void clearArraylist() {
         this.scenarioArrayList.clear();
     }
 
+    /**
+     * @return get the scenarioArrayList
+     */
     public ArrayList<Scenario> getScenarioArrayList() {
         return scenarioArrayList;
     }
 
+    // The arraylist contains the final data of survival rate for all groups
     private ArrayList<String> resultList = new ArrayList<String>();
-    // the hashmap is the aggregate storage of all values to be output
+    // the key is each category such as passenger, child, bird, etc. The value is survival rate
     private HashMap<String, Double> map = new HashMap<String, Double>();
-    private HashMap<Integer, Integer> roundTimesAndCounts = new HashMap<Integer, Integer>();
+    // result is the final formatted string that ready to be output
     private String result = "";
 
-
-    private static int roundCounts = 0;
+    // Counts how many scenarios have been assessed by decide() or user
+    private int roundCounts = 0;
+    // the age sum of survived human in all scenarios
     private double sumAliveHumanAge = 0;
+    // the average age for survived human in all scenarios
     private double aliveHumanAvgAge = 0;
 
-    // set up lists for corresponding attributes
+    // set up arraylists for corresponding attributes
     private ArrayList<Integer> maleList = new ArrayList<>();
     private ArrayList<Integer> femaleList = new ArrayList<>();
     private ArrayList<Integer> averageBodyList = new ArrayList<>();
     private ArrayList<Integer> athleticBodyList = new ArrayList<>();
     private ArrayList<Integer> overweightBodyList = new ArrayList<>();
-    // lists specifically for human
+    // arraylists specifically for human
     private ArrayList<Integer> doctorList = new ArrayList<>();
     private ArrayList<Integer> ceoList = new ArrayList<>();
     private ArrayList<Integer> criminalList = new ArrayList<>();
@@ -65,7 +75,7 @@ public class Audit {
     private ArrayList<Integer> childList = new ArrayList<>();
     private ArrayList<Integer> adultList = new ArrayList<>();
     private ArrayList<Integer> seniorList = new ArrayList<>();
-    // lists specifically for animal and related scenarios
+    // arraylists specifically for animal and related scenarios
     private ArrayList<Integer> passengerAliveList = new ArrayList<>();
     private ArrayList<Integer> pedestrianAliveList = new ArrayList<>();
     private ArrayList<Integer> animalList = new ArrayList<>();
@@ -83,11 +93,13 @@ public class Audit {
     private ArrayList<Integer> elephantList = new ArrayList<>();
     private ArrayList<Integer> youList = new ArrayList<>();
 
+    // these variables store the number of each category survived
     private double youSurvive, passengerSurvive, pedestrianSurvive, greenSurvive, redSurvive, humanSurvive, animalSurvive, petSurvive, maleSurvive, femaleSurvive, avgBodySurvive, athleticBodySurvive, overweightBodySurvive,
             babySurvive, childSurvive, adultSurvive, seniorSurvive, doctorSurvive, ceoSurvive,
             criminalSurvive, homelessSurvive, unemployedSurvive, teacherSurvive, cleanerSurvive, pregnantSurvive,
             birdSurvive, dogSurvive, catSurvive, turtleSurvive, cowSurvive, pigSurvive, elephantSurvive, deerSurvive;
 
+    // these variables is the survive rate in each category
     private double youSurviveRate, passengerSurviveRates, pedestrianSurviveRate, greenSurviveRate, redSurviveRate,
             humanSurviveRate, animalSurviveRate, petSurviveRate, maleSurviveRate, femaleSurviveRate, avgBodySurviveRate, athleticSurviveRate,
             overweightBodySurviveRate, babySurviveRate, childSurviveRate, adultSurviveRate, seniorSurviveRate,
@@ -96,10 +108,17 @@ public class Audit {
             birdSurviveRate, dogSurviveRate, catSurviveRate, turtleSurviveRate, cowSurviveRate, pigSurviveRate, elephantSurviveRate,
             deerSurviveRate;
 
-
+    /**
+     * The empty constructor
+     */
     public Audit() {
     }
 
+    /**
+     * The constructor for Audit
+     *
+     * @param scenarioArr accept a Scenario array
+     */
     public Audit(Scenario[] scenarioArr) {
         // transform the scenario array to the list then to the arraylist
         List<Scenario> tempList = Arrays.asList(scenarioArr.clone());
@@ -117,10 +136,16 @@ public class Audit {
         scenarioArrayList.add(s);
     }
 
+    /**
+     * @param auditType set the name of the audit type
+     */
     public void setAuditType(String auditType) {
         this.auditType = auditType;
     }
 
+    /**
+     * @return get the name of the audit type
+     */
     public String getAuditType() {
         return auditType;
     }
@@ -137,7 +162,7 @@ public class Audit {
      * The private method is for adding numbers to attribute lists only for human
      *
      * @param liveFlag comes from Live() after deciding which group live
-     * @param human    comes from the scenarioList that contains human objects
+     * @param human    comes from the scenarioList that contains human instances
      */
     private void addHumanCategoryList(int liveFlag, Human human) {
         if (human.getAgeCategory().toString().equals("BABY")) {
@@ -174,7 +199,7 @@ public class Audit {
      * The private method is for adding numbers to attribute lists only for animal
      *
      * @param liveFlag comes from Live() after deciding which group live
-     * @param animal   comes from the scenarioList that contains animal objects
+     * @param animal   comes from the scenarioList that contains animal instances
      */
     private void addAnimalCategoryList(int liveFlag, Animal animal) {
         if (animal.getSpecies().equals("bird")) {
@@ -204,13 +229,11 @@ public class Audit {
      * @param passengerLive generated from decide method (EthicalEngine) that represents if
      *                      the passenger is alive.
      */
-    public void Live(boolean passengerLive) {
-
+    public void live(boolean passengerLive) {
         int passengerLiveFlag, pedestrianLiveFlag;
         Persona[] passenger;
         Persona[] pedestrian;
         // passenger live implies pedestrians die, vice versa
-        // add counter to count number of cases that passenger survive
         if (passengerLive) {
             passengerAliveList.add(1);
             pedestrianAliveList.add(0);
@@ -323,14 +346,15 @@ public class Audit {
     public void calculateSurvivalRate() {
 
         for (Scenario i : scenarioArrayList) {
+            // in each scenario that has assessed, add counter by 1
             roundCounts += 1;
             // run Ethical Engine's decide method
             String groupCanLive = EthicalEngine.decide(i).toString();
 
             if (groupCanLive.equals("PASSENGERS")) {
-                Live(true);
+                live(true);
             } else {
-                Live(false);
+                live(false);
             }
         }
 
@@ -569,7 +593,9 @@ public class Audit {
         youSurviveRate = youSurvive / youList.size();
     }
 
-    // put key and value pairs into hashmap
+    /**
+     * @param map put key and value pairs into hashmap
+     */
     public void addIntoHashMap(HashMap<String, Double> map) {
         calculateSurvivalRate();
         map.put("average age", aliveHumanAvgAge);
@@ -610,6 +636,10 @@ public class Audit {
         map.put("elephant", elephantSurviveRate);
     }
 
+    /**
+     * @param map the hashmap contains the calculated category and survive rate pair
+     * @return sort the map in desc order
+     */
     public List<Map.Entry<String, Double>> descHashMap(HashMap<String, Double> map) {
         // add all pairs of key-value
         addIntoHashMap(map);
@@ -630,13 +660,14 @@ public class Audit {
                 // compare() requires an int to return
                 // to avoid downcast issue, multiply each double by 1000
                 return (int) (o2.getValue() * 1000 - o1.getValue() * 1000);
-                //逆序（从大到小）排列，正序为“return o1.getValue()-o2.getValue”
             }
         });
         return list;
     }
 
-
+    /**
+     * @param resultList add the formatted output to result variable
+     */
     public void saveEachResult(ArrayList<String> resultList) {
         // iterate through how many times the run() method have been run
         String result = "";
@@ -655,15 +686,16 @@ public class Audit {
                 "======================================\n" +
                 "- % SAVED AFTER " + roundCounts + " RUNS\n";
 
-
         result += "--" + "\n";
         result += "average age: " + String.format("%.2f", averageAge);
         resultList.add(title + result);
     }
 
-
+    /**
+     * @param runs create random scenarios with given numbers
+     *             then get the result using decide()
+     */
     public void run(int runs) {
-//        roundCounts += runs;
         // create scenarios
         creatScenarios(runs);
         saveEachResult(resultList);
@@ -704,7 +736,10 @@ public class Audit {
         deerSurvive = 0;
     }
 
-
+    /**
+     * using the scenario from resultList (CSV imported)
+     * then get the result using decide()
+     */
     public void run() {
         saveEachResult(resultList);
 
@@ -744,15 +779,23 @@ public class Audit {
         deerSurvive = 0;
     }
 
+    /**
+     *
+     * @return update the result variable from all data in resultList
+     */
     public String toString() {
         for (String i : resultList) {
             result += i;
-
         }
         return result;
 
     }
 
+    /**
+     * print the result to the command line
+     * The method has called toString(), if called toString() before,
+     * the output will be doubled.
+     */
     public void printStatistic() {
         toString();
         System.out.println(result);
@@ -762,7 +805,7 @@ public class Audit {
     /**
      * To print the results from toString() to the given file
      * The printToFile won't call toString(), to avoid empty file,
-     * must either call toString() or printStatistic first.
+     * must either call toString() or printStatistic first, and only once.
      *
      * @param filepath the relative file path (including directory eg: "tests/testfile.txt")
      */
@@ -773,7 +816,6 @@ public class Audit {
                 throw new DirectoryNotFound();
             } else {
                 String directory = filepath.substring(0, indexOfEndDirectory);
-//        String filename=filepath.substring(indexOfEndDirectory+1,filepath.length());
                 File dir = new File(directory);
                 if (!dir.isDirectory()) {
                     throw new DirectoryNotFound();
@@ -789,11 +831,8 @@ public class Audit {
             }
         } catch (IOException | DirectoryNotFound e) {
             System.out.println(e.getMessage());
-            e.printStackTrace();
             System.exit(0);
         }
-
-
     }
 }
 
