@@ -435,28 +435,25 @@ public class EthicalEngine {
         scenarioFromCSV = ScenarioList;
     }
 
-
+    /**
+     * Print the welcome message from the ascii file at the beginning
+     */
     public void printWelcome() {
         String header = "";
         try {
             BufferedReader reader = new BufferedReader(new FileReader("./welcome.ascii"));
-
             while ((header = reader.readLine()) != null) {
                 System.out.println(header);
             }
-//            while (reader.readLine() != null) {
-//                header += reader.readLine();
-//                header += "\n";
-//            }
             reader.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
-
+    /**
+     * Print the help function
+     */
     public static String printHelp() {
         String help = "EthicalEngine - COMP90041 - Final Project\n" +
                 "Usage: java EthicalEngine [arguments]\n" +
@@ -468,6 +465,13 @@ public class EthicalEngine {
         return help;
     }
 
+    /**
+     * This is the exit point of loop when doing interactive decision making
+     * @param consentANS if user consent to save their results
+     * @param audit instance of Audit
+     * @param continueAns the answer if user still want to continue when a round finish
+     * @return if false then break the loop, if true continue the loop
+     */
     private static boolean quitInteractive(String consentANS, Audit audit, String continueAns) {
         String quitAns;
         if (continueAns.equals("no")) {
@@ -488,6 +492,7 @@ public class EthicalEngine {
         return false;
     }
 
+
     public static void main(String[] args) {
         EthicalEngine ethicalEngine = new EthicalEngine();
         ethicalEngine.printWelcome(); // print the welcome header
@@ -502,7 +507,6 @@ public class EthicalEngine {
                 break;
             }
         }
-
 
         String inputFilePath = ""; // the path of CSV file that should be imported
         String outputFilePath = "./results.log"; // the default path of statistic result
