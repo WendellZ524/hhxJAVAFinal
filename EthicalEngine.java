@@ -464,10 +464,10 @@ public class EthicalEngine {
         String help = "EthicalEngine - COMP90041 - Final Project\n" +
                 "Usage: java EthicalEngine [arguments]\n" +
                 "Arguments:\n" +
-                "-c or --config Optional: path to config file\n" +
-                "-h or --help Print Help (this message) and exit\n" +
-                "-r or --results Optional: path to results log file\n" +
-                "-i or --interactive Optional: launches interactive mode\n";
+                "-c or --config\tOptional: path to config file\n" +
+                "-h or --help\tPrint Help (this message) and exit\n" +
+                "-r or --results\tOptional: path to results log file\n" +
+                "-i or --interactive\tOptional: launches interactive mode\n";
         return help;
     }
 
@@ -492,16 +492,14 @@ public class EthicalEngine {
         String outputFilePath = "./results.log"; // the default path of statistic result
 
 
-        String str = "java EthicalEngine -c tests/config_3.csv";
+        String str = "java EthicalEngine -h";
         // Using split() to split the user input
         String[] strArr = str.split(" ");
 //        strArr=args.clone();
 
         // transform the array to list to facilitate searching flag
         List<String> strList = Arrays.asList(strArr);
-        for (String i : strArr) {
-            System.out.println(i);
-        }
+
 
         int configIsExist = -1;
         int interactiveIsExist = -1;
@@ -657,7 +655,7 @@ public class EthicalEngine {
                             a.printToFile("./user.log");
                         }
                         while (true) {
-                            System.out.println("That’s all. Press Enter to quit.");
+                            System.out.println("That's all. Press Enter to quit.");
                             // Somehow the result is in the next 2 line
                             // read again
                             sc.nextLine();

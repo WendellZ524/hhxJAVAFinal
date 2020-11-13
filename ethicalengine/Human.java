@@ -102,13 +102,18 @@ public class Human extends Persona {
 
 
         if (this.getProfession().toString().equals("NONE")) { // don't print profession if it's NONE
-            temp1 = (outputYou + getBodyType() + " " + getAgeCategory() + " "
-                    + " " + getGender() + " " + outputPregnant);
-            return temp1.replaceAll("\\s+", " ");
+            temp1 = (outputYou + getBodyType().toString().toLowerCase() + " " +
+                    getAgeCategory().toString().toLowerCase() + " "
+                    + " " + getGender().toString().toLowerCase() + " " + outputPregnant);
+            temp1=temp1.replaceAll("\\s+", " ");
+            return temp1.trim();
         } else {
-            temp2 = (outputYou + getBodyType() + " " + getAgeCategory() + " "
-                    + getProfession() + " " + getGender() + " " + outputPregnant);
-            return temp2.replaceAll("\\s+", " ");
+            temp2 = (outputYou + getBodyType().toString().toLowerCase() + " "
+                    + getAgeCategory().toString().toLowerCase() + " "
+                    + getProfession().toString().toLowerCase() + " " + getGender().toString().toLowerCase()
+                    + " " + outputPregnant);
+            temp2=temp2.replaceAll("\\s+", " ");
+            return temp2.trim();
         }
 
 

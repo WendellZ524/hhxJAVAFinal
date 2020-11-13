@@ -109,18 +109,20 @@ public class Scenario {
      */
     public String outputPassengers(){
         String temp="";
-        // 判断是否有实例
-        for(Persona i: getPassengers()) {
-            if (i != null) {
-                temp += "- ";
-                temp += i.toString();
-                temp += "\n";
-            }
-            else {
-                temp += "- ";
-                temp += "有null！！！！！";
-            }
+//        for(Persona i: getPassengers()) {
+//            if (i != null) {
+//                temp += "- ";
+//                temp += i.toString();
+//                temp+="\n";
+//            }
+//        }
+        for (int i = 0; i < getPassengers().length-1; i++) {
+            temp+="- ";
+            temp+=getPassengers()[i].toString();
+            temp+="\n";
         }
+        // the last one don't need blank space
+        temp+="- "+getPassengers()[getPassengers().length-1];
     return temp;}
 
     /**
@@ -129,17 +131,21 @@ public class Scenario {
      */
     public String outputPedestrians(){
         String temp="";
-        for(Persona i: getPedestrians()) {
-            if (i != null) {
-                temp += "- ";
-                temp += i.toString();
-                temp += "\n";
-            }
-            else {
-                temp += "- ";
-                temp += "有null！！！！！";
-            }
+//        for(Persona i: getPedestrians()) {
+//            if (i != null) {
+//                temp += "- ";
+//                temp += i.toString();
+//                temp+="\n";
+//            }
+//        }
+        for (int i = 0; i < getPedestrians().length-1; i++) {
+            temp+="- ";
+            temp+=getPedestrians()[i].toString();
+            temp+="\n";
         }
+        // the last one don't need blank space
+        temp+="- "+getPedestrians()[getPedestrians().length-1];
+
         return temp;}
 
     public String toString(){

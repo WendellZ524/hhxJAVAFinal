@@ -643,7 +643,7 @@ public class Audit {
 
 
         result += "--" + "\n";
-        result += "average age:" + String.format("%.2f", averageAge);
+        result += "average age: " + String.format("%.2f", averageAge);
         resultList.add(title+result);
     }
 
