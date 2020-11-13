@@ -8,12 +8,17 @@ import java.util.Scanner;
 
 
 /**
- * COMP90041, Sem2, 2020: Final Project: A skeleton code for you to update
+ * COMP90041, Sem2, 2020: Final Project:
+ * This is the entry point of the program, letting user select mode.
  *
  * @author: HAIXIANG HUANG
+ * student id: 965205
+ * username: HAIXIANGH
+ * Github repository link:
+ * https://github.com/COMP90041/final-project-moral-machines-haixiangh.git
  */
-public class EthicalEngine {
 
+public class EthicalEngine {
     private static Scanner sc = new Scanner(System.in);
     // the arraylist contains all CSV based scenarios, and should be the input for Audit constructor
     private static ArrayList<Scenario> scenarioFromCSV;
@@ -471,6 +476,25 @@ public class EthicalEngine {
         return help;
     }
 
+    private static boolean quitInteractive(String consentANS, Audit audit, String continueAns) {
+        String quitAns;
+        if (continueAns.equals("no")) {
+            audit.setAuditType("User");
+            audit.run();
+            audit.printStatistic();
+            if (consentANS.equals("yes")) { // save the user log if permitted
+                audit.printToFile("./user.log");
+            }
+            while (true) {
+                System.out.println("That’s all. Press Enter to quit.");
+                quitAns = sc.nextLine();
+                if (quitAns.equals("")) { // enter
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     public static void main(String[] args) {
         EthicalEngine ethicalEngine = new EthicalEngine();
@@ -767,25 +791,7 @@ public class EthicalEngine {
 
     }
 
-    private static boolean quitInteractive(String consentANS, Audit audit, String continueAns) {
-        String quitAns;
-        if (continueAns.equals("no")) {
-            audit.setAuditType("User");
-            audit.run();
-            audit.printStatistic();
-            if (consentANS.equals("yes")) { // save the user log if permitted
-                audit.printToFile("./user.log");
-            }
-            while (true) {
-                System.out.println("That’s all. Press Enter to quit.");
-                quitAns =sc.nextLine();
-                if (quitAns.equals("")) { // enter
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+
 }
 
 
