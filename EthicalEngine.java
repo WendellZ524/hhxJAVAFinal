@@ -492,7 +492,7 @@ public class EthicalEngine {
         String outputFilePath = "./results.log"; // the default path of statistic result
 
 
-        String str = "java EthicalEngine -i";
+        String str = "java EthicalEngine -c tests/config_3.csv";
         // Using split() to split the user input
         String[] strArr = str.split(" ");
 //        strArr=args.clone();

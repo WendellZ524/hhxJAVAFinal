@@ -91,39 +91,38 @@ public class Human extends Persona {
     public String toString() {
         String temp1;
         String temp2;
-        String temp3;
-        String temp4;
         String outputPregnant = "";
+        String outputYou = "";
         if (this.isPregnant()) {
             outputPregnant = "pregnant";
         }
-
         if (this.isYou()) {
-            if (this.getProfession().toString().equals("NONE")) { // don't print profession if it's NONE
-                temp1 = ("you " + getBodyType() + " " + getAgeCategory() + " "
-                        + " " + getGender() + " " + outputPregnant);
-                return temp1.replaceAll("\\s+", " ");
-            } else {
-                temp2 = ("you " + getBodyType() + " " + getAgeCategory() + " "
-                        + getProfession() + " " + getGender() + " " + outputPregnant);
-                return temp2.replaceAll("\\s+", " ");
-
-            }
+            outputYou = "you ";
         }
-        // you are not the passenger
-        else {
-            if (this.getProfession().toString().equals("NONE")) { // don't print profession if it's NONE
-                temp3 = getBodyType() + " " + getAgeCategory() + " "
-                        + " " + getGender() + " " + outputPregnant;
-                return temp3.replaceAll("\\s+", " ");
 
-            } else {
-                // 用replace方法把两个空格的情况换成一个空格
-                temp4 = getBodyType() + " " + getAgeCategory() + " "
-                        + getProfession() + " " + getGender() + " " + outputPregnant;
-                return temp4.replaceAll("\\s+", " ");
-            }
+
+        if (this.getProfession().toString().equals("NONE")) { // don't print profession if it's NONE
+            temp1 = (outputYou + getBodyType() + " " + getAgeCategory() + " "
+                    + " " + getGender() + " " + outputPregnant);
+            return temp1.replaceAll("\\s+", " ");
+        } else {
+            temp2 = (outputYou + getBodyType() + " " + getAgeCategory() + " "
+                    + getProfession() + " " + getGender() + " " + outputPregnant);
+            return temp2.replaceAll("\\s+", " ");
         }
+
+
+//        if (this.getProfession().toString().equals("NONE")) { // don't print profession if it's NONE
+//            temp3 = getBodyType() + " " + getAgeCategory() + " "
+//                    + " " + getGender() + " " + outputPregnant;
+//            return temp3.replaceAll("\\s+", " ");
+//
+//        } else {
+//            temp4 = getBodyType() + " " + getAgeCategory() + " "
+//                    + getProfession() + " " + getGender() + " " + outputPregnant;
+//            return temp4.replaceAll("\\s+", " ");
+//        }
+
     }
 
 }
