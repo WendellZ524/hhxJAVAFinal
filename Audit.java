@@ -1,8 +1,20 @@
+/**
+ * COMP90041, Sem2, 2020: Final Project:
+ * The class is for applying the decide() to different scenarios and decide the outcome
+ * Then print to the command line or print to a file
+ *
+ * @throws Audit.DirectoryNotFound If the directory does not exists
+ * @author: HAIXIANG HUANG
+ * student id: 965205
+ * username: HAIXIANGH
+ * Github repository link:
+ * https://github.com/COMP90041/final-project-moral-machines-haixiangh.git
+ */
+
 import ethicalengine.*;
 
 import java.util.*;
 import java.io.*;
-
 
 public class Audit {
     static class DirectoryNotFound extends Exception {
@@ -15,7 +27,7 @@ public class Audit {
 
     private ArrayList<Scenario> scenarioArrayList = new ArrayList<Scenario>();
 
-    public void clearArraylist(){
+    public void clearArraylist() {
         this.scenarioArrayList.clear();
     }
 
@@ -87,19 +99,21 @@ public class Audit {
 
     public Audit() {
     }
-    public Audit(Scenario[] scenarioArr){
+
+    public Audit(Scenario[] scenarioArr) {
         // transform the scenario array to the list then to the arraylist
-        List<Scenario> tempList= Arrays.asList(scenarioArr.clone());
+        List<Scenario> tempList = Arrays.asList(scenarioArr.clone());
         this.scenarioArrayList = new ArrayList<Scenario>(tempList);
     }
 
     /**
      * To add one scenario to scenarioArrayList
+     *
      * @param scenario a scenario instance
      */
-    public void addScenario(Scenario scenario){
-        Scenario s=new Scenario();
-        s=scenario;
+    public void addScenario(Scenario scenario) {
+        Scenario s = new Scenario();
+        s = scenario;
         scenarioArrayList.add(s);
     }
 
@@ -309,7 +323,7 @@ public class Audit {
     public void calculateSurvivalRate() {
 
         for (Scenario i : scenarioArrayList) {
-            roundCounts+=1;
+            roundCounts += 1;
             // run Ethical Engine's decide method
             String groupCanLive = EthicalEngine.decide(i).toString();
 
@@ -644,7 +658,7 @@ public class Audit {
 
         result += "--" + "\n";
         result += "average age: " + String.format("%.2f", averageAge);
-        resultList.add(title+result);
+        resultList.add(title + result);
     }
 
 
@@ -745,11 +759,11 @@ public class Audit {
     }
 
 
-
     /**
      * To print the results from toString() to the given file
      * The printToFile won't call toString(), to avoid empty file,
      * must either call toString() or printStatistic first.
+     *
      * @param filepath the relative file path (including directory eg: "tests/testfile.txt")
      */
     public void printToFile(String filepath) {

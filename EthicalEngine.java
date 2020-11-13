@@ -1,3 +1,18 @@
+/**
+ * COMP90041, Sem2, 2020: Final Project:
+ * This is the entry point of the program, letting user select mode.
+ *
+ * @throws EthicalEngine.InvalidDataFormatException The data format in config file is not expected
+ * @throws EthicalEngine.InvalidCharacteristicException The data value of
+ * Characteristic in config file is not expected
+ * @throws EthicalEngine.NumberFormatException The number format in config file is not expected
+ * @author: HAIXIANG HUANG
+ * student id: 965205
+ * username: HAIXIANGH
+ * Github repository link:
+ * https://github.com/COMP90041/final-project-moral-machines-haixiangh.git
+ */
+
 import ethicalengine.*;
 
 import java.io.*;
@@ -7,25 +22,7 @@ import java.util.List;
 import java.util.Scanner;
 
 
-/**
- * COMP90041, Sem2, 2020: Final Project:
- * This is the entry point of the program, letting user select mode.
- *
- * @author: HAIXIANG HUANG
- * student id: 965205
- * username: HAIXIANGH
- * Github repository link:
- * https://github.com/COMP90041/final-project-moral-machines-haixiangh.git
- */
-
 public class EthicalEngine {
-    private static Scanner sc = new Scanner(System.in);
-    // the arraylist contains all CSV based scenarios, and should be the input for Audit constructor
-    private static ArrayList<Scenario> scenarioFromCSV;
-
-    // the arraylist contains all random generated scenarios
-    private static ArrayList<Scenario> scenarioFromRandom;
-
     static class InvalidDataFormatException extends Exception {
         public InvalidDataFormatException() {
             super();
@@ -56,30 +53,35 @@ public class EthicalEngine {
         }
     }
 
+    private static Scanner sc = new Scanner(System.in);
+    // the arraylist contains all CSV based scenarios, and should be the input for Audit constructor
+    private static ArrayList<Scenario> scenarioFromCSV;
+
+    // the arraylist contains all random generated scenarios
+    private static ArrayList<Scenario> scenarioFromRandom;
+
+    // the arraylist contains all data imported from CSV file and a EndMark when the file ends
+    private static ArrayList<String[]> importedCSVData = new ArrayList<String[]>();
+
+    public enum Decision {PASSENGERS, PEDESTRIANS}
 
     /**
-     * To find if there's digits in a string
+     * To find if there are digits in a string
      *
-     * @param str Input a String
+     * @param str input a String
      * @return boolean if the string has digits
      */
     public static boolean isDigit(String str) {
         return str.matches("[0-9]{1,}");
     }
 
-    private static ArrayList<String[]> importedCSVData = new ArrayList<String[]>();
-
-    public enum Decision {PASSENGERS, PEDESTRIANS}
-
     /**
      * Decides whether to save the passengers or the pedestrians
      *
-     * @param Scenario scenario: the ethical dilemma
+     * @param scenario: the instance of a scenario
      * @return Decision: which group to save
      */
     public static Decision decide(Scenario scenario) {
-
-
         Double passengerWeight = 0.5;
         Double pedestrianWeight = 0.5;
         // for interactive mode setting that allow passenger live
@@ -91,7 +93,7 @@ public class EthicalEngine {
             pedestrianWeight += 100;
         }
 
-        // if the peds are crossing illegally
+        // if the pedestrians are crossing illegally
         if (!scenario.isLegalCrossing()) {
             pedestrianWeight -= 0.5;
         }
@@ -155,12 +157,11 @@ public class EthicalEngine {
                     pedestrianWeight += 0.05;
                 }
                 if (((Animal) i).getSpecies().equals("bird")) {
-                    pedestrianWeight -= 0.05;
+                    pedestrianWeight -= 0.1;
                 }
             }
 
         }
-
         if (passengerWeight > pedestrianWeight) {
             return Decision.PASSENGERS;
         } else {
@@ -193,16 +194,15 @@ public class EthicalEngine {
                     importedCSVData.add(item);
                 }
                 reader.close();
+                // create an array indicating it is the end of file
                 String[] endMarkArray = new String[1];
                 endMarkArray[0] = "End Mark";
                 importedCSVData.add(endMarkArray);
-
             }
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
-            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
@@ -211,7 +211,6 @@ public class EthicalEngine {
      * An arraylist called scenarioFromCSV is imported and filled with scenarios
      */
     public static void createCSVScenario() {
-
         ArrayList<Scenario> ScenarioList = new ArrayList<Scenario>();
         ArrayList<Persona> passenger = new ArrayList<Persona>();
         ArrayList<Persona> pedestrian = new ArrayList<Persona>();
@@ -224,9 +223,11 @@ public class EthicalEngine {
             try {
                 // if in rows that not have 10 values (except for scenario and End Mark)
                 // throw an Exception and continue
-                if (line.length != 10 && !line[0].startsWith("scenario") && !line[0].equals("End Mark")) {
-                    throw new InvalidDataFormatException("WARNING: invalid data format in config file in" +
-                            "line < " + lineCounter + " >");
+                if (line.length != 10 && !line[0].startsWith("scenario")
+                        && !line[0].equals("End Mark")) {
+                    throw new InvalidDataFormatException
+                            ("WARNING: invalid data format in config file in" +
+                                    "line < " + lineCounter + " >");
                 }
             } catch (InvalidDataFormatException e) {
                 System.out.println(e.getMessage());
@@ -237,9 +238,13 @@ public class EthicalEngine {
                 if (ScenarioID == -1) {
                     ScenarioList.add(new Scenario());
                     ScenarioID++;
-                    ScenarioList.get(ScenarioID).setLegalCrossing(line[0].substring(9).equals("green"));
+                    // substring(9) indicating the legality of the scenario
+                    ScenarioList.get(ScenarioID).setLegalCrossing
+                            (line[0].substring(9).equals("green"));
 
                 } else {
+                    // transfer arraylists to arrays
+                    // because setters require array as parameter
                     Persona[] passengerArr = new Persona[passenger.size()];
                     Persona[] pedestrianArr = new Persona[pedestrian.size()];
 
@@ -353,8 +358,8 @@ public class EthicalEngine {
                         System.out.println(e.getMessage());
                     }
 
-
                     boolean isPregnant = line[5].toUpperCase().equals("TRUE");
+
                     // create human instance
                     Human human = new Human(age, profession, gender, bodyType, isPregnant);
 
@@ -412,9 +417,9 @@ public class EthicalEngine {
                         System.out.println(e.getMessage());
                     }
 
+                    // create animal instance with species
                     Animal animal = new Animal(line[7]);
                     animal.setPet(line[8].toUpperCase().equals("TRUE"));
-
                     animal.setAge(age);
                     animal.setGender(gender);
                     animal.setBodyType(bodyType);
@@ -426,23 +431,10 @@ public class EthicalEngine {
                 }
             }
         }
+        // transfer the scenarios to a static variable
         scenarioFromCSV = ScenarioList;
-
     }
 
-    /**
-     * To transform a scenario arraylist to array
-     *
-     * @param scenarioArrayList an scenarioList of type scenario
-     * @return a scenario array
-     */
-    public static Scenario[] toScenarioArray(ArrayList<Scenario> scenarioArrayList) {
-        Scenario[] scenarioArr = new Scenario[scenarioArrayList.size()];
-        for (int i = 0; i < scenarioArr.length; i++) {
-            scenarioArr[i] = scenarioArrayList.get(i);
-        }
-        return scenarioArr;
-    }
 
     public void printWelcome() {
         String header = "";
